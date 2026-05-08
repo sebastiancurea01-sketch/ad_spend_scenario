@@ -7,7 +7,7 @@ sources:
     schema: website_source
     tables:
       - name: website_session
-      - name: orders
+      - name: order
 
   - name: external_marketing
     # This points to the new catalog/schema we built for the ad data
