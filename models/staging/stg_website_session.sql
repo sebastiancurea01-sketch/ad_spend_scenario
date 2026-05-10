@@ -1,8 +1,8 @@
 WITH SOURCE AS (
     SELECT * FROM {{ source('internal_data', 'website_session') }}
-)
+),
 
-SELECT
+renamed_and_cast AS (SELECT
     CAST(website_session_id AS STRING) AS session_id,
     CAST(created_at AS TIMESTAMP) AS session_at,
     CAST(created_at AS DATE) AS session_date, -- New column for easy daily reporting
@@ -13,3 +13,9 @@ SELECT
     CAST(device_type AS STRING) AS device_type,
     CAST(http_referer AS STRING) AS http_referer
 FROM SOURCE
+)
+SELECT
+    *,
+    -- Metadata column
+    {{ dbt.current_timestamp() }} AS _loaded_at
+FROM renamed_and_cast
