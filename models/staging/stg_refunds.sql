@@ -1,8 +1,8 @@
 WITH SOURCE AS (
     SELECT * FROM {{ source('internal_data', 'refunds') }}
-)
+),
 
-SELECT
+renamed_and_cast AS (SELECT
     CAST(order_item_refund_id AS STRING) AS order_item_refund_id,
     CAST(created_at AS TIMESTAMP) AS session_at,
     CAST(created_at AS DATE) AS session_date, -- New column for easy daily reporting
@@ -11,3 +11,9 @@ SELECT
     CAST(refund_amount_usd AS DECIMAL(10,2)) AS refund_amount_usd
 
 FROM SOURCE
+)
+SELECT
+    *,
+    -- Metadata column
+    {{ dbt.current_timestamp() }} AS _loaded_at
+FROM renamed_and_cast
