@@ -30,3 +30,5 @@ LEFT JOIN performance AS p
     ON s.date_day = p.date_day
     AND s.utm_source = p.utm_source
     AND s.utm_campaign = p.utm_campaign
+
+ORDER BY date_day DESC
