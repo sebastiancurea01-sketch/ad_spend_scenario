@@ -4,7 +4,8 @@ sources:
   - name: internal_data
     # This usually points to your main Databricks storage
     database: raw
-    schema: website_source
+    schema: website_source 
+         
     tables:
       - name: website_session
       - name: order
