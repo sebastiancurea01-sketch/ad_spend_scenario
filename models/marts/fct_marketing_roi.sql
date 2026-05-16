@@ -3,7 +3,7 @@ WITH spend AS (
 ),
 
 performance AS (
-    SELECT * FROM {{ ref('fct_daily_performance_summarized') }}
+    SELECT * FROM {{ ref('int_daily_performance_summarized') }}
 )
 
 SELECT
