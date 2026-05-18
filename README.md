@@ -146,23 +146,6 @@ first-class source. See [ADR-002](docs/decisions/ADR-002.md).
 
 ---
 
-## Setup
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/yourusername/your-repo-name.git
-
-# 2. Install dbt dependencies
-dbt deps
-
-# 3. Configure profiles.yml with your Databricks credentials
-
-# 4. Run the pipeline
-dbt build
-```
-
----
-
 ## CI/CD
 Every pull request triggers:
 1. `sqlfluff lint` — SQL style enforcement
