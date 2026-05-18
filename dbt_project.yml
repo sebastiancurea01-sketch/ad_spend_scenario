@@ -39,6 +39,18 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   my_new_project:
-    # Applies to all files under models/example/
-    example:
+  
+# Layer 1: Staging (Always Views)
+    staging:
       +materialized: view
+      +schema: staging          # Automatically puts these in a 'staging' schema in Databricks
+
+    # Layer 2: Intermediate (Ephemeral or Table depending on compute needs)
+    intermediate:
+      +materialized: table      # Physical tables optimize performance for heavy transformations
+      +schema: intermediate
+
+    # Layer 3: Marts (Tables or Incremental for your 1.7M+ rows)
+    marts:
+      +materialized: table
+      +schema: marts
