@@ -15,3 +15,5 @@ SELECT
     -- Metadata column
     {{ dbt.current_timestamp() }} AS _loaded_at
 FROM renamed_and_cast
+
+ORDER BY date_day DESC
