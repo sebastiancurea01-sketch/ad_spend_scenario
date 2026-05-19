@@ -23,7 +23,7 @@ ecommerce_growth_sustainability_analysis:
       token: "{{ env_var('TOKEN') }}"
 
     # 3. PRODUCTION: Used by GitHub Actions when code merges to main
-databricks_job:
+    databricks_job:
       type: databricks
       catalog: analytics
       schema: prod_analytics
