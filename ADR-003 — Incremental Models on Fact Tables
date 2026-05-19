@@ -1,0 +1,32 @@
+# ADR-003 — Incremental Models on Fact Tables
+
+---
+
+## Context
+`fct_monthly_metrics` aggregates data across 3 years of orders and sessions. 
+In a production setting this table grows continuously as new orders arrive daily.
+
+## Decision
+Materialise fact tables as `incremental` with a `merge` strategy rather than 
+full `table` refresh.
+
+| | Incremental | Full Refresh |
+|---|---|---|
+| Runtime on large tables | ✅ Fast — processes new rows only | 🔴 Slow — rebuilds everything |
+| Complexity | Medium | Low |
+| Requires unique key | ✅ Yes | No |
+| Correct for growing data | ✅ Yes | ❌ Wasteful |
+
+```sql
+{{ config(
+    materialized = 'incremental',
+    unique_key   = 'month',
+    incremental_strategy = 'merge'
+) }}
+```
+
+## Consequences
+- Requires a reliable `unique_key` to prevent duplicate rows on merge
+- Slightly more complex logic than full refresh
+- Significant compute and cost savings at scale — full refresh on a 
+  multi-year fact table is not viable in production
