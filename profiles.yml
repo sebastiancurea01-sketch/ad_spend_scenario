@@ -24,7 +24,7 @@ ecommerce_growth_sustainability_analysis:
 
     # 3. PRODUCTION: Used by GitHub Actions when code merges to main
     prod:
-      type: databricks
+      type: databricks_job
       catalog: analytics
       schema: prod_analytics
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"

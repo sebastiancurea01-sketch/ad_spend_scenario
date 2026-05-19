@@ -1,4 +1,3 @@
--- comment
 WITH SOURCE AS (
     SELECT * FROM {{ source('external_marketing', 'ad_spend') }}
 ),
