@@ -19,3 +19,4 @@ SELECT
     -- Metadata column
     {{ dbt.current_timestamp() }} AS _loaded_at
 FROM renamed_and_cast
+-- comment
