@@ -20,7 +20,7 @@ SELECT
         WHEN o.order_id IS NOT NULL THEN 1 
         ELSE 0 
     END AS is_conversion,
-
+-- comment
         -- first order date per user, derived entirely from orders
     min(ordered_date) over (partition by o.user_id)     as first_order_date,
 
