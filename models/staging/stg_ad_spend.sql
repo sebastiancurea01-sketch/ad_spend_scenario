@@ -1,7 +1,7 @@
 WITH SOURCE AS (
     SELECT * FROM {{ source('external_marketing', 'ad_spend') }}
 ),
-
+-- comment
 renamed_and_cast AS (SELECT
     CAST(reporting_date AS DATE) AS date_day,
     LOWER(utm_source) AS utm_source,
