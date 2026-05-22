@@ -1,3 +1,10 @@
+{{
+  config(
+    materialized='table',
+    schema='prod_analytics'
+  )
+}}
+
 with performance as (
     select * from {{ ref('int_daily_performance_summarized') }}
 ),
