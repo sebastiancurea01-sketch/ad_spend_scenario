@@ -1,0 +1,39 @@
+name: dbt CD - Deploy to Prod
+
+on:
+  push:
+    branches:
+      - main        # ← triggers when PR merges to main
+
+jobs:
+  dbt-prod-run:
+    runs-on: ubuntu-latest
+
+    env:
+      DBT_TOKEN: ${{ secrets.TOKEN }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt
+        run: pip install dbt-databricks
+
+      - name: Install dbt packages
+        run: dbt deps --profiles-dir .
+
+      - name: Run dbt models in prod
+        run: dbt run --target prod --profiles-dir .
+
+      - name: Upload manifest to GitHub Actions
+        uses: actions/upload-artifact@v3
+        with:
+          name: prod-manifest
+          path: target/manifest.json        # ← saves manifest for Slim CI to use
