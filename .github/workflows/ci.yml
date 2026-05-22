@@ -29,7 +29,7 @@ jobs:
         run: dbt deps
 
       - name: Download prod manifest           
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: prod-manifest
           path: ./prod-manifest
