@@ -28,6 +28,12 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
+      - name: Download prod manifest           
+        uses: actions/download-artifact@v3
+        with:
+          name: prod-manifest
+          path: ./prod-manifest
+
       # To run Slim CI, dbt needs the production state. 
       # In a real enterprise, we download the manifest.json from a cloud bucket.
       # For a portfolio, compiling the main branch first is a clean workaround.
