@@ -33,7 +33,7 @@ jobs:
         run: dbt run --target prod --profiles-dir .
 
       - name: Upload manifest to GitHub Actions
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: prod-manifest
           path: target/manifest.json        # ← saves manifest for Slim CI to use
