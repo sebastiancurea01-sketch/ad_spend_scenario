@@ -11,8 +11,8 @@ jobs:
 
     env:
       DBT_TOKEN: ${{ secrets.TOKEN }}
-      DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
-      DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
+      DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+      DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
 
     steps:
       - name: Checkout code
