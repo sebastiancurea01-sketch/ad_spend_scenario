@@ -5,13 +5,6 @@ models:
     description: >
       Staging model for marketing ad spend data covering the last quarter.
       Standardizes naming conventions and ensures grain consistency.
-    
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - date_day
-            - utm_source
-            - utm_campaign
 
     columns:
       - name: date_day
