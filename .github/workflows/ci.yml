@@ -13,9 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run dbt (Bootstrap - No Defer)
-        run: dbt build --target prod
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
