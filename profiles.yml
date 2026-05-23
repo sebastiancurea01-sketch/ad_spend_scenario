@@ -10,7 +10,7 @@ ecommerce_growth:
       schema: dbt_scurea
       host: "{{ env_var('DBT_LOCAL_HOST') }}"
       http_path: "{{ env_var('DBT_LOCAL_HTTP_PATH') }}"
-      token: "{{ env_var('TOKEN') }}"
+      TOKEN: "{{ env_var('TOKEN') }}"
     
     # 2. SLIM CI: Used by GitHub Actions when you open a Pull Request
     ci:
@@ -20,7 +20,7 @@ ecommerce_growth:
       # This prevents developers from overwriting each other's test data
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
-      token: "{{ env_var('TOKEN') }}" # Fallback to empty string if missing
+      TOKEN: "{{ env_var('TOKEN') }}" # Fallback to empty string if missing
       
     # 3. PRODUCTION: Used by GitHub Actions when code merges to main
     prod:
@@ -29,4 +29,4 @@ ecommerce_growth:
       schema: prod_analytics
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
-      token: "{{ env_var('TOKEN') }}" # Fallback to empty string if missing 
+      TOKEN: "{{ env_var('TOKEN') }}" # Fallback to empty string if missing 
