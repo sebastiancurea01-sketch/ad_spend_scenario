@@ -4,15 +4,16 @@ on:
   push:
     branches:
       - main        # ← triggers when PR merges to main
+  workflow_dispatch:
 
 jobs:
   dbt-prod-run:
     runs-on: ubuntu-latest
 
     env:
-      DBT_TOKEN: ${{ secrets.TOKEN }}
-      DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
-      DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
+      TOKEN: ${{ secrets.TOKEN }}
+      DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+      DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
 
     steps:
       - name: Checkout code
