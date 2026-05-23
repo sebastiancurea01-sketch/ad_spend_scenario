@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main        # ← triggers when PR merges to main
+  workflow_dispatch:
 
 jobs:
   dbt-prod-run:
