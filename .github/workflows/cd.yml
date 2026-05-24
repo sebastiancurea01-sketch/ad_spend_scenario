@@ -36,6 +36,9 @@ jobs:
       - name: Install dbt packages
         run: dbt deps --profiles-dir .
 
+      - name: Debug connection                  
+        run: dbt debug --target prod --profiles-dir
+
       - name: Run dbt models in prod
         run: dbt run --target prod --profiles-dir .
 
