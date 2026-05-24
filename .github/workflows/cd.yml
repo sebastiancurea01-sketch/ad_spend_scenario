@@ -25,7 +25,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dbt
-        run: pip install dbt-databricks
+        run: pip install dbt-databricks==1.9.0
 
       - name: Install dbt packages
         run: dbt deps --profiles-dir .
