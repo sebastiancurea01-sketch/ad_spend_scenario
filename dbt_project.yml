@@ -30,4 +30,3 @@ models:
 
     marts:
       +materialized: table
-      +schema: marts            # → analytics.marts (prod_analytics comes from profiles.yml)
