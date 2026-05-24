@@ -1,3 +1,5 @@
+-- MY CI/CD FINALLY WORKS !!!!!
+
 {{
   config(
     materialized='table',
