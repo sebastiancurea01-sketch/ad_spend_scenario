@@ -19,7 +19,7 @@ Use `COPY INTO` instead of Auto Loader.
 | Setup complexity | Low | Medium |
 | File discovery | Directory scan | Cloud notification service |
 
-## Consequences
+## Consequence
 - Simpler setup with no stream configuration overhead
 - Not suitable if the source evolves into a real-time feed
 - **Future state:** migrating to Auto Loader when connecting Azure Data Lake Gen2 as the source
