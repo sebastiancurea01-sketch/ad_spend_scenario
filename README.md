@@ -156,5 +156,5 @@ Built an automated deployment pipeline to ensure code quality and reliable produ
 ## Orchestration
 Databricks Workflow DAG with on-failure email alert:
 ```
-<img width="683" height="156" alt="image" src="https://github.com/user-attachments/assets/c492c3a9-64c3-47be-b28d-bdb5b95259a0" />
+<img width="694" height="177" alt="image" src="https://github.com/user-attachments/assets/697e7ce8-bb1e-4ea3-ab3b-4afac7667330" />
 
