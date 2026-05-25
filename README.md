@@ -64,7 +64,7 @@ the architecture with a standard Azure + Databricks enterprise stack.
 ## dbt DAG
 > Full lineage from raw sources to mart models — every dependency is tested and documented.
 
-<img width="900" height="231" alt="image" style='hight: auto; max-height: 231px; src="https://github.com/user-attachments/assets/81a380c7-9391-493d-a476-c72cf3a7b6e6" />
+<img width="900" height="231" alt="image" style='hight: auto; max-height: 231pxobject-fit: contain"; src="https://github.com/user-attachments/assets/81a380c7-9391-493d-a476-c72cf3a7b6e6" />
 
 ---
 
