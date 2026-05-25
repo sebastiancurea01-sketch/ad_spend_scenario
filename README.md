@@ -2,16 +2,6 @@
 > **Can 174% YoY revenue growth survive 98% customer churn?**  
 > I found this signal analysing 3 years of transactional data in Excel + Power BI — then built a production-grade pipeline to quantify and prove it.
 
----
-
-## dbt DAG
-> Full lineage from raw sources to mart models — every dependency is tested and documented.
-
-![dbt DAG](docs/images/dbt_dag.png)
-*(screenshot: paste your dbt Cloud lineage graph here)*
-
----
-
 ## The Analysis
 
 **174% YoY growth — but 98% of customers never returned**  
@@ -45,31 +35,36 @@ to quantify exactly when the model breaks.
 ## Architecture
 
 ```
-                    ┌─────────────────────────────┐
-                    │   Source Data (Maven Analytics)│
-                    │   Orders · Sessions · Products │
+                    ┌─────────────────────────────────┐
+                    │   Source Data (Maven Analytics) │
+                    │   Orders · Sessions · Products  │
                     └────────────┬────────────────────┘
                                  │ COPY INTO
                     ┌────────────▼────────────────────┐
-                    │   Databricks Unity Catalog       │
-                    │   Raw Delta Tables               │
-                    │   (Future: Azure Data Lake)      │
+                    │   Databricks Unity Catalog      │
+                    │   Raw Delta Tables              │
+                    │   (Future: Azure Data Lake)     │
                     └────────────┬────────────────────┘
                                  │
                     ┌────────────▼────────────────────┐
-                    │   dbt Cloud                      │
-                    │   Staging → Intermediate → Mart  │
+                    │   dbt Cloud                     │
+                    │   Staging → Intermediate → Mart │
                     └────────────┬────────────────────┘
                                  │
                     ┌────────────▼────────────────────┐
-                    │   Power BI Dashboard             │
-                    │   7 KPIs · Sustainability Model  │
+                    │   Power BI Dashboard            │
+                    │   7 KPIs · Sustainability Model │
                     └─────────────────────────────────┘
 ```
 
 **Future state:** Raw data will be ingested from Azure Data Lake Storage Gen2 
 into Databricks, replacing the current COPY INTO from local CSV. This aligns 
 the architecture with a standard Azure + Databricks enterprise stack.
+
+## dbt DAG
+> Full lineage from raw sources to mart models — every dependency is tested and documented.
+
+<img width="1000" height="185" alt="image" src="https://github.com/user-attachments/assets/81a380c7-9391-493d-a476-c72cf3a7b6e6" />
 
 ---
 
@@ -107,7 +102,6 @@ first-class source. See [ADR-002](docs/decisions/ADR-002.md).
 | `int_sessions_joined_orders` | Intermediate | Sessions enriched with order data, `is_new_customer` flag |
 | `int_daily_performance_summarized` | Intermediate | Daily aggregation by channel — revenue, sessions, conversions |
 | `fct_monthly_metrics` | Mart | All 7 KPIs at monthly grain — ROAS, CAC, LTV, CR, YoY, churn, brand % |
-| `scenario__growth_sustainability` | Mart | LTV/CAC ratio, months to payback, breakeven ROAS |
 
 ---
 
@@ -129,9 +123,7 @@ first-class source. See [ADR-002](docs/decisions/ADR-002.md).
 - Singular tests:
   - Revenue is never negative
   - New customers never exceed total conversions
-  - CAC exceeding LTV triggers a **warning** — this is the finding, not a bug
   - ROAS is always positive when spend exists
-  - Ad spend only contains known channels
 
 ---
 
@@ -146,18 +138,22 @@ first-class source. See [ADR-002](docs/decisions/ADR-002.md).
 
 ---
 
-## CI/CD
-Every pull request triggers:
-1. `sqlfluff lint` — SQL style enforcement
-2. `dbt compile` — syntax validation
-3. `dbt build --select state:modified+` — tests on changed models only
+## CI/CD Pipeline
+ 
+Built an automated deployment pipeline to ensure code quality and reliable production deployments across the full dbt + Databricks stack.
 
-On merge to `main`: full `dbt build` runs automatically.
+## Continuous Integration
+ 
+- GitHub Actions triggers on every Pull Request running only modified models via Slim CI (`state:modified+`), reducing compute costs and test time
+- Changes are isolated in a temporary schema per PR, preventing broken code from reaching production
+## Continuous Deployment
+ 
+- dbt Cloud Jobs deploys all models to `prod_analytics` in Databricks on merge to main
+- Generates a fresh `manifest.json` after every prod run, enabling Slim CI to correctly diff the next PR
 
 ---
 
 ## Orchestration
 Databricks Workflow DAG with on-failure email alert:
-```
-[01_ingestion] → [02_dbt_build] → [03_quality_checks]
-```
+<img width="694" height="177" alt="image" src="https://github.com/user-attachments/assets/697e7ce8-bb1e-4ea3-ab3b-4afac7667330" />
+
