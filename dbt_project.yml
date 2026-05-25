@@ -17,8 +17,8 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  ecommerce_growth:             # ← project name
-    +catalog: analytics         # ← correct catalog for all models
+  ecommerce_growth:             
+    +catalog: analytics         
 
     staging:
       +materialized: view

@@ -3,7 +3,7 @@ ecommerce_growth:
   target: dev
   outputs:
     
-    # 1. LOCAL DEV: Used when you type `dbt run` on your laptop
+    # 1. LOCAL DEV: Used when you type dbt run on your laptop
     dev:
       type: databricks
       catalog: analytics
