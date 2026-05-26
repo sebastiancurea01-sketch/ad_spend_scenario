@@ -1,5 +1,3 @@
--- MY CI/CD FINALLY WORKS !!!!!
-
 {{
   config(
     materialized='table',
@@ -63,7 +61,7 @@ final as (
         total_spend,
         total_clicks,
 
-        -- KPIs
+        -- KPI
         round(total_revenue
             / nullif(total_spend, 0), 2)                        as roas,
         round(total_spend
