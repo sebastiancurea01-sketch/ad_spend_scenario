@@ -1,5 +1,5 @@
 
-```dax
+```dax 
 Retention Line = 
 VAR TotalCustomers = 
     CALCULATE(
