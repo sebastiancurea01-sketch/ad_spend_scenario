@@ -1,0 +1,11 @@
+
+```dax
+Retention Line = 
+VAR TotalCustomers = 
+    CALCULATE(
+        DISTINCTCOUNT('orders'[user_id]), 
+        REMOVEFILTERS('orders'[Months Since First Order])
+    )
+VAR ReturningCustomers = DISTINCTCOUNT('orders'[user_id])
+RETURN
+DIVIDE(ReturningCustomers, TotalCustomers, 0)
