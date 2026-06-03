@@ -1,3 +1,5 @@
+
+```dax
 RPR = VAR TotaleClienti = COUNT(orders[user_id])
 VAR ClientiRicorrenti = 
 	COUNTROWS(
