@@ -1,0 +1,12 @@
+
+```dax
+RPR = VAR TotaleClienti = COUNT(orders[user_id])
+VAR ClientiRicorrenti = 
+	COUNTROWS(
+		FILTER(
+		VALUES(orders[user_id]),
+		CALCULATE(COUNT(orders[user_id])) > 1
+		)
+	)
+	RETURN
+	DIVIDE(ClientiRicorrenti, TotaleClienti, 0)
