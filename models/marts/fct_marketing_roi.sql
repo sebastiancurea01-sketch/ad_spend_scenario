@@ -11,7 +11,7 @@ SELECT
     s.utm_source,
     s.utm_campaign,
     s.total_spend,
-    s.total_clicks,
+    s.total_clicks as Total_Clicks,
     COALESCE(p.total_revenue, 0) AS total_revenue,
     COALESCE(p.total_conversions, 0) AS total_conversions,
     COALESCE(p.total_sessions, 0) AS total_sessions,
