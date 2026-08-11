@@ -18,7 +18,7 @@ performance AS (
 )
 
 SELECT
-    s.date_day,
+    date_day,
     s.utm_source,
     s.utm_campaign,
     s.total_spend,
@@ -27,13 +27,13 @@ SELECT
     COALESCE(p.total_conversions, 0) AS total_conversions,
     COALESCE(p.total_sessions, 0) AS total_sessions,
 
-    -- Calculation: Return on Ad Spend (Revenue / Spend)
+    -- Calculation: Return on Ad Spend
     CASE 
         WHEN s.total_spend > 0 THEN ROUND(p.total_revenue / s.total_spend, 2)
         ELSE NULL 
     END AS ROAS,
 
-    -- Calculation: Cost Per Acquisition (Spend / Conversions)
+    -- Calculation: Cost Per Acquisition 
     CASE 
         WHEN p.total_conversions > 0 THEN ROUND(s.total_spend / p.total_conversions, 2) 
         ELSE NULL 
