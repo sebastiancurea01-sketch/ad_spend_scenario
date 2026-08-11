@@ -1,5 +1,16 @@
+{{
+    config(
+        materialized='incremental',
+    )
+}}
+-- CTE filtering data
 WITH spend AS (
     SELECT * FROM {{ ref('stg_ad_spend') }}
+
+    -- BEST PRACTICE: Filtering data as early as possible to save computing cost
+    {% if is_incremental() %}
+        where event_time > (select max(s.date_day) from {{ this }}) 
+    {% endif %}
 ),
 
 performance AS (
