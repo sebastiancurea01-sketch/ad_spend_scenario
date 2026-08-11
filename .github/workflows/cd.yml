@@ -1,26 +1,47 @@
+
 name: dbt CD - Deploy to Prod
 
 on:
   push:
     branches:
-      - main
+      - main        # ← triggers when PR merges to main
   workflow_dispatch:
 
 jobs:
-  trigger-dbt-cloud-job:
+  dbt-prod-run:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Trigger dbt Cloud Job
-        run: |
-          response=$(curl -s -X POST \
-          -H "Authorization: Token ${{ secrets.DBT_CLOUD_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{"cause": "Triggered by GitHub Actions CD"}' \
-          "https://cloud.getdbt.com/api/v2/accounts/${{ secrets.DBT_ACCOUNT_ID }}/jobs/${{ secrets.DBT_JOB_ID }}/run/")
-          echo $response
+    env:
+      TOKEN: ${{ secrets.TOKEN }}
+      DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+      DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
 
-      - name: Check job triggered successfully
-        run: |
-          echo "dbt Cloud Job triggered ✅"
-          echo "Monitor progress at: https://cloud.getdbt.com"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Cache pip dependencies             # 3. cache BEFORE install
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-dbt-databricks
+
+      - name: Install dbt
+        run: pip install dbt-databricks
+
+      - name: Install dbt packages
+        run: dbt deps --profiles-dir .
+
+      - name: Run dbt models in prod
+        run: dbt run --target prod --profiles-dir .
+
+      - name: Upload manifest to GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-manifest
+          path: target/manifest.json        # ← saves manifest for Slim CI to use
