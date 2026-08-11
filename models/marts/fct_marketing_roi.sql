@@ -18,7 +18,7 @@ performance AS (
 )
 
 SELECT
-    date_day,
+    s.date_day,
     s.utm_source,
     s.utm_campaign,
     s.total_spend,
