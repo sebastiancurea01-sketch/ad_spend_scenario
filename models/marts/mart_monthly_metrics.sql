@@ -63,7 +63,7 @@ final as (
 
         -- KPI
         round(total_revenue
-            / nullif(total_spend, 0), 2)                        as roas,
+            / nullif(total_spend, 0), 2)                        as ROAS,
         round(total_spend
             / nullif(total_conversions, 0), 2)                  as cpa,
         round(total_conversions
@@ -82,7 +82,7 @@ final as (
                         partition by utm_source, utm_campaign
                         order by month
                     ), 0)
-            ), 4)                                               as churn_rate,
+            ), 4)                                               as Churn_Rate,
 
         -- yoy growth: revenue vs same month prior year
         round(
