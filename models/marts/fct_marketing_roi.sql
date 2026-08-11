@@ -26,7 +26,7 @@ SELECT
     CASE 
         WHEN p.total_conversions > 0 THEN ROUND(s.total_spend / p.total_conversions, 2) 
         ELSE NULL 
-    END AS CPA,
+    END AS cpa,
 
     -- Calculation: revenue coming from brand channel
     CASE
