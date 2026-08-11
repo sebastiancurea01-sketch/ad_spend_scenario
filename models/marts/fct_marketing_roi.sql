@@ -9,7 +9,7 @@ WITH spend AS (
 
     -- BEST PRACTICE: Filtering data as early as possible to save computing cost
     {% if is_incremental() %}
-        where event_time > (select max(s.date_day) from {{ this }}) 
+        where date_day > (select max(s.date_day) from {{ this }}) 
     {% endif %}
 ),
 
