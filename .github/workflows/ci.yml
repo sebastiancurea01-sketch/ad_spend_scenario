@@ -30,7 +30,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: prod-manifest
-          path: ./prod-manifest
+          path: target/manifest.json
 
       # To run Slim CI, dbt needs the production state. 
       # In a real enterprise, we download the manifest.json from a cloud bucket.
