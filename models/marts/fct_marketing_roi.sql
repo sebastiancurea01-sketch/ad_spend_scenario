@@ -39,7 +39,7 @@ SELECT
         ELSE NULL 
     END AS CPA,
 
-    -- Calculation: Revenue coming from brand channel
+    -- Calculation: revenue coming from brand channel
     CASE
         WHEN s.utm_campaign = 'brand'
         THEN COALESCE(p.total_revenue, 0)
