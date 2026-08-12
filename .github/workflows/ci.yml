@@ -26,11 +26,14 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Download prod manifest           
-        uses: actions/download-artifact@v4
+      - name: Fetch Production Manifest from CD Workflow
+        uses: dawidd6/action-download-artifact@v6
         with:
+          workflow: cd.yml
+          workflow_conclusion: success
+          branch: main
           name: prod-manifest
-          path: target/manifest.json
+          path: ./prod-state
 
       # To run Slim CI, dbt needs the production state. 
       # In a real enterprise, we download the manifest.json from a cloud bucket.
