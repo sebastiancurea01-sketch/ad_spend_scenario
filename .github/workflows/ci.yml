@@ -28,15 +28,15 @@ jobs:
 
       - name: Install dbt packages
         run: dbt deps
+      
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@v0.221.0
 
-      - name: Fetch Production Manifest from CD Workflow
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: cd.yml
-          workflow_conclusion: success
-          branch: main
-          name: prod-manifest
-          path: ./prod-state
+      - name: Fetch Prod Manifest from Databricks Volume
+        run: |
+          mkdir -p ./prod-state
+          databricks fs cp dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
+            ./prod-state/manifest.json || echo "No production manifest found."
 
       # To run Slim CI, dbt needs the production state. 
       # In a real enterprise, we download the manifest.json from a cloud bucket.
@@ -46,6 +46,9 @@ jobs:
           DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
           DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
           TOKEN: ${{ secrets.TOKEN }}
+          # Databricks CLI credentials
+          DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           git checkout main
           dbt compile --target prod
