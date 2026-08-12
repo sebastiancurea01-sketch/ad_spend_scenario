@@ -33,7 +33,7 @@ jobs:
         uses: databricks/setup-cli@v0.221.0
 
       - name: Fetch Prod Manifest from Databricks Volume
-          env:
+        env:
           # Dynamically prepends https:// for databricks-cli while leaving the GitHub Secret clean for dbt
           DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
           DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
