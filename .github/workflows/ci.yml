@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+      
+      - name: Fetch Main Branch
+        run: git fetch origin main:main
 
       - name: Set up Python
         uses: actions/setup-python@v5
