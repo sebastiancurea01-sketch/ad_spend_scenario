@@ -15,6 +15,9 @@ jobs:
       TOKEN: ${{ secrets.TOKEN }}
       DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
       DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
+      # Databricks CLI credentials
+      DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -37,11 +40,15 @@ jobs:
       - name: Install dbt packages
         run: dbt deps --profiles-dir .
 
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@v0.221.0
+
       - name: Run dbt models in prod
         run: dbt run --target prod --profiles-dir .
 
-      - name: Upload manifest to GitHub Actions
-        uses: actions/upload-artifact@v4
-        with:
-          name: prod-manifest
-          path: target/manifest.json        # ← saves manifest for Slim CI to use
+      - name: Sync Manifest to Databricks Volume
+        run: |
+          databricks fs cp target/manifest.json \
+            dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
+            --overwrite
+      
