@@ -61,4 +61,5 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
         # The magic command: Run only modified models and their children (+)
         # using the production state we just grabbed as a baseline.
-        run: dbt build --target prod
+        run: dbt build --target dev --select state:modified+ --defer --state ./prod-manifest
+
