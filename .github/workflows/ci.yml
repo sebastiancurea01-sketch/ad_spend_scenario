@@ -58,17 +58,19 @@ jobs:
           cp target/manifest.json ./state/
           git checkout -
 
-      - name: Run Slim CI (Only Modified Models)
+      - name: Download Manifest from Databricks Volume
         env:
-          DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
-          DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
-          TOKEN: ${{ secrets.TOKEN }}
-        # The magic command: Run only modified models and their children (+)
-        # using the production state we just grabbed as a baseline.
-      - name: Run Slim CI
-              run: |
-                dbt build \
-                  --target dev \
-                  --select state:modified+ \
-                  --defer \
-                  --state ./prod-manifest
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          mkdir -p prod-manifest
+          # Replace with your actual catalog, schema, volume, and file path
+          databricks fs cp dbfs:/Volumes/prod_catalog/my_schema/my_volume/manifest.json ./prod-manifest/manifest.json      - name: Run Slim CI
+      
+      - name: Run Slim CI        
+        run: |
+          dbt build \
+            --target dev \
+            --select state:modified+ \
+            --defer \
+            --state ./prod-manifest
