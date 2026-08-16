@@ -38,9 +38,7 @@ jobs:
           databricks fs cp dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
             ./prod-state/manifest.json || echo "No production manifest found."
 
-      # To run Slim CI, dbt needs the production state. 
-      # In a real enterprise, we download the manifest.json from a cloud bucket.
-      # For a portfolio, compiling the main branch first is a clean workaround.
+      # To run Slim CI, dbt needs the production state. x
       - name: Get Production State for Comparison
         env:
           DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
