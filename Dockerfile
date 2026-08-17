@@ -1,5 +1,9 @@
 FROM python:3.11-slim
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Copy just this one file in first, before anything else.
@@ -11,9 +15,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
-
-ENV DATABRICKS_HOST=""
-ENV DATABRICKS_TOKEN=""
-ENV DATABRICKS_HTTP_PATH=""
 
 CMD ["dbt", "--version"]

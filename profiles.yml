@@ -32,3 +32,11 @@ ecommerce_growth:
       token: "{{ env_var('TOKEN') }}" # Fallback to empty string if missing
       auth_type: token # <--- CRITICAL: Force token authentication for headless runners
       threads: 4
+    
+    dev_scratch: # <--- Must match --target dev_scratch
+      type: databricks
+      catalog: analytics
+      schema: scratch_schema
+      host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('TOKEN') }}"
