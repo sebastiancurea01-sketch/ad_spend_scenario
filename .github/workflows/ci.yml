@@ -16,18 +16,6 @@ jobs:
       - name: Fetch Main Branch
         run: git fetch origin main:main
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dbt & Databricks adapter
-        run: |
-          pip install --upgrade pip
-          pip install dbt-databricks
-
-      - name: Install dbt packages
-        run: dbt deps
       
       - name: Install Databricks CLI
         uses: databricks/setup-cli@v0.221.0
@@ -41,27 +29,16 @@ jobs:
           mkdir -p ./prod-state
           databricks fs cp dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
             ./prod-state/manifest.json || echo "No production manifest found."
+      
+      - name: Build Docker Image
+        run: docker build -t dbt-local .
 
       # To run Slim CI, dbt needs the production state. x
-      - name: Get Production State for Comparison
-        env:
-          DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
-          DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
-          TOKEN: ${{ secrets.TOKEN }}
-          # Databricks CLI credentials
-          DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      - name: Run dbt Slim CI in Docker
         run: |
-          git checkout main
-          dbt compile --target prod
-          mkdir -p ./state
-          cp target/manifest.json ./state/
-          git checkout -
-      - name: Run Slim CI (Only Modified Models)
-        env:
-          DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
-          DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
-          TOKEN: ${{ secrets.TOKEN }}
-        # The magic command: Run only modified models and their children (+)
-        # using the production state we just grabbed as a baseline.
-        run: dbt build --target dev
+          docker run --rm \
+            -v ${PWD}/state:/usr/app/state \
+            -e DBT_DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
+            -e DBT_DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
+            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DATABRICKS_HTTP_PATH }}" \
+            dbt-local sh -c "dbt deps && dbt build --select state:modified+ --defer --state state --target dev_scratch"

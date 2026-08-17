@@ -23,32 +23,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          
-      - name: Cache pip dependencies             # 3. cache BEFORE install
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-dbt-databricks
-
-      - name: Install dbt
-        run: pip install dbt-databricks
-
-      - name: Install dbt packages
-        run: dbt deps --profiles-dir .
-
       - name: Install Databricks CLI
         uses: databricks/setup-cli@v0.221.0
-
-      - name: Run dbt models in prod
-        run: dbt run --target prod --profiles-dir .
-
-      - name: Sync Manifest to Databricks Volume
+      
+      - name: Run dbt Production Build in Docker
         run: |
-          databricks fs cp target/manifest.json \
-            dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
-            --overwrite
+          docker run --rm \
+            -v ${PWD}/target:/usr/app/target \
+            -e DBT_DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
+            -e DBT_DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
+            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DATABRICKS_HTTP_PATH }}" \
+            dbt-local sh -c "dbt deps && dbt build --target prod"
+
+      - name: Upload updated manifest.json to Databricks Volume
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks fs cp ./target/manifest.json dbfs:/Volumes/your_catalog/your_schema/your_volume/manifest.json --overwrite
       
