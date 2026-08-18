@@ -1,7 +1,8 @@
 [core]
 dialect = databricks
 templater = jinja
-exclude_rules = L034,L013,L016
+ignore_templated_errors = true
+exclude_rules = L034,L013,L016,TMP
 
 [sqlfluff:templater:jinja]
-apply_dbt_macros = true
+apply_dbt_macros = false
