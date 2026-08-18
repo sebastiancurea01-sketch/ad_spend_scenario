@@ -39,7 +39,7 @@ jobs:
             -v ${PWD}/models:/app/models \
             dbt-local sqlfluff lint models/ --dialect databricks
 
-      # To run Slim CI, dbt needs the production state. x
+      # To run Slim CI, dbt needs the production state
       - name: Run dbt Slim CI in Docker
         run: |
           docker run --rm \
