@@ -32,7 +32,7 @@ jobs:
       - name: Run dbt Production Build in Docker
         run: |
           docker run --rm \
-            -v ${PWD}/target:/usr/app/target \
+            -v ${PWD}/target:/app/target \
             -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
             -e TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
