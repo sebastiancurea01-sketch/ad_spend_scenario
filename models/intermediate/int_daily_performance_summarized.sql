@@ -9,17 +9,17 @@ SELECT
     SUM(price_usd) AS total_revenue,
     SUM(is_conversion) AS total_conversions,
     COUNT(session_id) AS total_sessions,
-        -- new vs returning — COUNT the flag, don't carry it raw
-    count(distinct case
-        when is_new_customer = true
-        then user_id
-    end)                                       as new_customers,
+    -- new vs returning — COUNT the flag, don't carry it raw
+    COUNT(DISTINCT CASE
+        WHEN is_new_customer = true
+            THEN user_id
+    END) AS new_customers,
 
-    count(distinct case
-        when is_new_customer = false
-        then user_id
-    end)                                       as returning_customers
+    COUNT(DISTINCT CASE
+        WHEN is_new_customer = false
+            THEN user_id
+    END) AS returning_customers
 
 FROM joined_data
-GROUP BY 
+GROUP BY
     1, 2, 3

@@ -33,6 +33,12 @@ jobs:
       - name: Build Docker Image
         run: docker build -t dbt-local .
 
+      - name: Lint SQL with sqlfluff
+        run: |
+          docker run --rm \
+            -v ${PWD}/models:/app/models \
+            dbt-local sqlfluff lint models/ --dialect databricks
+
       # To run Slim CI, dbt needs the production state. x
       - name: Run dbt Slim CI in Docker
         run: |

@@ -25,25 +25,26 @@ joined as (
         p.returning_customers,
         s.total_spend,
         s.total_clicks
-    from performance p
-    right join ad_spend s
-        on  p.date_day      = s.date_day
-        and p.utm_source    = s.utm_source
-        and p.utm_campaign  = s.utm_campaign
+    from performance as p
+    right join ad_spend as s
+        on
+            p.date_day = s.date_day
+            and p.utm_source = s.utm_source
+            and p.utm_campaign = s.utm_campaign
 ),
 
 monthly as (
     select
-        date_trunc('month', date_day)   as month,
+        date_trunc('month', date_day) as month,
         utm_source,
         utm_campaign,
-        sum(total_revenue)              as total_revenue,
-        sum(total_sessions)             as total_sessions,
-        sum(total_conversions)          as total_conversions,
-        sum(new_customers)              as new_customers,
-        sum(returning_customers)        as returning_customers,
-        sum(total_spend)                as total_spend,
-        sum(total_clicks)               as total_clicks
+        sum(total_revenue) as total_revenue,
+        sum(total_sessions) as total_sessions,
+        sum(total_conversions) as total_conversions,
+        sum(new_customers) as new_customers,
+        sum(returning_customers) as returning_customers,
+        sum(total_spend) as total_spend,
+        sum(total_clicks) as total_clicks
     from joined
     group by 1, 2, 3
 ),
@@ -62,16 +63,26 @@ final as (
         total_clicks,
 
         -- KPI
-        round(total_revenue
-            / nullif(total_spend, 0), 2)                        as roas,
-        round(total_spend
-            / nullif(total_conversions, 0), 2)                  as cpa,
-        round(total_conversions
-            / nullif(total_sessions, 0), 4)                     as conversion_rate,
-        round(total_spend
-            / nullif(new_customers, 0), 2)                      as cac_usd,
-        round(total_revenue
-            / nullif(total_conversions, 0), 2)                  as avg_ltv_usd,
+        round(
+            total_revenue
+            / nullif(total_spend, 0), 2
+        ) as roas,
+        round(
+            total_spend
+            / nullif(total_conversions, 0), 2
+        ) as cpa,
+        round(
+            total_conversions
+            / nullif(total_sessions, 0), 4
+        ) as conversion_rate,
+        round(
+            total_spend
+            / nullif(new_customers, 0), 2
+        ) as cac_usd,
+        round(
+            total_revenue
+            / nullif(total_conversions, 0), 2
+        ) as avg_ltv_usd,
 
         -- churn rate: % of last month's customers who did not return
         round(
@@ -81,8 +92,10 @@ final as (
                     lag(total_conversions, 1) over (
                         partition by utm_source, utm_campaign
                         order by month
-                    ), 0)
-            ), 4)                                               as churn_rate,
+                    ), 0
+                )
+            ), 4
+        ) as churn_rate,
 
         -- yoy growth: revenue vs same month prior year
         round(
@@ -93,7 +106,8 @@ final as (
             / nullif(lag(total_revenue, 12) over (
                 partition by utm_source, utm_campaign
                 order by month
-            ), 0), 4)                                          as yoy_revenue_growth
+            ), 0), 4
+        ) as yoy_revenue_growth
 
     from monthly
 )

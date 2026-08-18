@@ -9,7 +9,7 @@ WITH spend AS (
 
     -- BEST PRACTICE: Filtering data as early as possible to save computing cost
     {% if is_incremental() %}
-        where date_day > (select max(date_day) from {{ this }}) 
+        WHERE date_day > (SELECT max(date_day) FROM {{ this }})
     {% endif %}
 ),
 
@@ -23,33 +23,34 @@ SELECT
     s.utm_campaign,
     s.total_spend,
     s.total_clicks,
-    COALESCE(p.total_revenue, 0) AS total_revenue,
-    COALESCE(p.total_conversions, 0) AS total_conversions,
-    COALESCE(p.total_sessions, 0) AS total_sessions,
+    coalesce(p.total_revenue, 0) AS total_revenue,
+    coalesce(p.total_conversions, 0) AS total_conversions,
+    coalesce(p.total_sessions, 0) AS total_sessions,
 
     -- Calculation: Return on Ad Spend
-    CASE 
-        WHEN s.total_spend > 0 THEN ROUND(p.total_revenue / s.total_spend, 2)
-        ELSE NULL 
-    END AS ROAS,
+    CASE
+        WHEN s.total_spend > 0 THEN round(p.total_revenue / s.total_spend, 2)
+    END AS roas,
 
     -- Calculation: Cost Per Acquisition 
-    CASE 
-        WHEN p.total_conversions > 0 THEN ROUND(s.total_spend / p.total_conversions, 2) 
-        ELSE NULL 
-    END AS CPA,
+    CASE
+        WHEN
+            p.total_conversions > 0
+            THEN round(s.total_spend / p.total_conversions, 2)
+    END AS cpa,
 
     -- Calculation: Revenue coming from brand channel
     CASE
         WHEN s.utm_campaign = 'brand'
-        THEN COALESCE(p.total_revenue, 0)
+            THEN coalesce(p.total_revenue, 0)
         ELSE 0
     END AS brand_revenue_usd
 
 FROM spend AS s
 LEFT JOIN performance AS p
-    ON s.date_day = p.date_day
-    AND s.utm_source = p.utm_source
-    AND s.utm_campaign = p.utm_campaign
+    ON
+        s.date_day = p.date_day
+        AND s.utm_source = p.utm_source
+        AND s.utm_campaign = p.utm_campaign
 
 ORDER BY s.date_day DESC

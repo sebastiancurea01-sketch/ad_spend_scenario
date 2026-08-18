@@ -1,0 +1,6 @@
+[core]
+dialect = databricks
+exclude_rules = L034,L013,L016
+
+[sqlfluff:templater:jinja]
+apply_dbt_macros = true
