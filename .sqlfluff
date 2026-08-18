@@ -5,9 +5,3 @@ exclude_rules = L034,L013,L016
 
 [sqlfluff:templater:jinja]
 apply_dbt_macros = true
-
-[sqlfluff:templater:jinja:context]
-ref = lambda x: "{{ ref('" + x + "') }}"
-source = lambda x, y: "{{ source('" + x + "', '" + y + "') }}"
-config = {}
-this = "{{ this }}"
