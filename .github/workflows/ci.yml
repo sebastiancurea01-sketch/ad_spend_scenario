@@ -37,8 +37,14 @@ jobs:
       - name: Run dbt Slim CI in Docker
         run: |
           docker run --rm \
-            -v ${PWD}/state:/usr/app/state \
+            -v ${PWD}/state:/app/state \
             -e DBT_DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
             -e DBT_DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DATABRICKS_HTTP_PATH }}" \
+            -e DBT_SCHEMA="pr_${{ github.event.number }}" \
             dbt-local sh -c "dbt deps && dbt build --select state:modified+ --defer --state state --target dev_scratch"
+
+      - name: Clean up PR Schema (on PR close)
+        if: github.event.action == 'closed'
+        run: |
+          databricks sql -e "DROP SCHEMA IF EXISTS pr_${{ github.event.number }} CASCADE"

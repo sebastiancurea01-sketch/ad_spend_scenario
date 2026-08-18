@@ -16,11 +16,12 @@ ecommerce_growth:
     ci:
       type: databricks
       catalog: analytics
-      # Dynamically creates a temporary schema for every PR (e.g., ci_pr_42)
+      # Dynamically creates a temporary schema for every PR (e.g., pr_42)
       # This prevents developers from overwriting each other's test data
+      schema: "{{ env_var('DBT_SCHEMA') }}"
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
-      token: "{{ env_var('TOKEN') }}" # Fallback to empty string if missing
+      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
       
     # 3. PRODUCTION: Used by GitHub Actions when code merges to main
     prod:
@@ -29,14 +30,14 @@ ecommerce_growth:
       schema: prod_analytics
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
-      token: "{{ env_var('TOKEN') }}" # Fallback to empty string if missing
+      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
       auth_type: token # <--- CRITICAL: Force token authentication for headless runners
       threads: 4
     
     dev_scratch: # <--- Must match --target dev_scratch
       type: databricks
       catalog: analytics
-      schema: scratch_schema
+      schema: "{{ env_var('DBT_SCHEMA') }}"
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
-      token: "{{ env_var('TOKEN') }}"
+      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
