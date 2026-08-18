@@ -1,13 +1,17 @@
-[core]
+[sqlfluff]
 dialect = databricks
-templater = jinja
-exclude_rules = L034,L013,L016
+templater = dbt
+max_line_length = 120
 
-[sqlfluff:templater:jinja]
-apply_dbt_macros = true
+[sqlfluff:templater:dbt]
+profiles_dir = .
+project_dir = .
 
-[sqlfluff:templater:jinja:context]
-ref = lambda x: "{{ ref('" + x + "') }}"
-source = lambda x, y: "{{ source('" + x + "', '" + y + "') }}"
-config = {}
-this = "{{ this }}"
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = consistent
+
+[sqlfluff:indentation]
+tab_space_size = 4
