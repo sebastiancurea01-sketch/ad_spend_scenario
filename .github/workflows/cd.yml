@@ -33,8 +33,8 @@ jobs:
         run: |
           docker run --rm \
             -v ${PWD}/target:/usr/app/target \
-            -e DBT_DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
-            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DATABRICKS_HTTP_PATH }}" \
+            -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
+            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
             -e TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
             dbt-local sh -c "dbt deps && dbt build --target prod"
 
