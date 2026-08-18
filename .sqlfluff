@@ -1,8 +1,11 @@
-[core]
+[sqlfluff]
 dialect = databricks
-templater = jinja
+templater = dbt
 ignore_templated_errors = true
-exclude_rules = L034,L013,L016,TMP
+exclude_rules = L034,L013,L016
 
-[sqlfluff:templater:jinja]
-apply_dbt_macros = false
+[sqlfluff:templater:dbt]
+project_dir = .
+profiles_dir = .
+profile = my_databricks_profile
+target = ci
