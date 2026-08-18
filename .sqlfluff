@@ -1,11 +1,17 @@
 [sqlfluff]
 dialect = databricks
 templater = dbt
-ignore_templated_errors = true
-exclude_rules = L034,L013,L016
+max_line_length = 120
 
 [sqlfluff:templater:dbt]
-project_dir = .
 profiles_dir = .
-profile = my_databricks_profile
-target = ci
+project_dir = .
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = consistent
+
+[sqlfluff:indentation]
+tab_space_size = 4
