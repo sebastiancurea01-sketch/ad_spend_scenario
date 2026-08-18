@@ -25,6 +25,9 @@ jobs:
 
       - name: Install Databricks CLI
         uses: databricks/setup-cli@v0.221.0
+
+      - name: Build Docker Image
+        run: docker build -t dbt-local .
       
       - name: Run dbt Production Build in Docker
         run: |
