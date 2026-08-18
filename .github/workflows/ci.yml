@@ -39,6 +39,6 @@ jobs:
           docker run --rm \
             -v ${PWD}/state:/app/state \
             -e DBT_DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
-            -e DBT_DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
+            -e TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DATABRICKS_HTTP_PATH }}" \
             dbt-local sh -c "dbt deps && dbt build --select state:modified+ --defer --state state --target dev_scratch"
