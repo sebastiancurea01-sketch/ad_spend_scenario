@@ -5,7 +5,6 @@ exclude_rules = L034,L013,L016
 
 [sqlfluff:templater:jinja]
 apply_dbt_macros = true
-load_macros_from_path = macros
 
 [sqlfluff:templater:jinja:context]
 ref = lambda x: "{{ ref('" + x + "') }}"
