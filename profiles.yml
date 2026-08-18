@@ -10,7 +10,7 @@ ecommerce_growth:
       schema: dbt_scurea
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
-      token: "{{ env_var('TOKEN') }}"
+      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
     
     # 2. SLIM CI: Used by GitHub Actions when you open a Pull Request
     ci:
@@ -41,3 +41,4 @@ ecommerce_growth:
       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
       token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
+      auth_type: token

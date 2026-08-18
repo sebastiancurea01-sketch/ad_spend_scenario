@@ -11,11 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TOKEN: ${{ secrets.TOKEN }}
       DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
       DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
-      # Databricks CLI credentials
-      DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+      # Databricks CLI credentials (requires https:// prefix)
+      DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
       DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
 
     steps:
@@ -43,6 +42,16 @@ jobs:
           DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
           DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
         run: |
+          echo "=== Checking if manifest.json exists ==="
+          ls -la ./target/manifest.json || echo "manifest.json NOT found!"
+          
+          echo "=== Testing Databricks CLI connection ==="
+          databricks fs ls dbfs:/Volumes/analytics/default/ || echo "Cannot access Volumes directory"
+          
+          echo "=== Creating dbt_state directory if it doesn't exist ==="
+          databricks fs mkdirs dbfs:/Volumes/analytics/default/dbt_state || echo "Directory may already exist"
+          
+          echo "=== Uploading manifest.json ==="
           databricks fs cp ./target/manifest.json \
             dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
             --overwrite
