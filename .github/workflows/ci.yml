@@ -26,9 +26,9 @@ jobs:
           DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
           DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
         run: |
-          mkdir -p ./prod-state
+          mkdir -p ./state
           databricks fs cp dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
-            ./prod-state/manifest.json || echo "No production manifest found."
+            ./state/manifest.json || echo "No production manifest found."
       
       - name: Build Docker Image
         run: docker build -t dbt-local .
