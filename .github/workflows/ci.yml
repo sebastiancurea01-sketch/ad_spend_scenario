@@ -37,7 +37,7 @@ jobs:
       - name: Run dbt Slim CI in Docker
         run: |
           docker run --rm \
-            -v ${PWD}/state:/usr/app/state \
+            -v ${PWD}/state:/app/state \
             -e DBT_DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
             -e DBT_DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DATABRICKS_HTTP_PATH }}" \
