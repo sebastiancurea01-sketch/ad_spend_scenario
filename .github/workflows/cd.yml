@@ -40,8 +40,8 @@ jobs:
 
       - name: Upload updated manifest.json to Databricks Volume
         env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
         run: |
           databricks fs cp ./target/manifest.json dbfs:/Volumes/analytics/default/dbt_state/manifest.json --overwrite
       
