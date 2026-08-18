@@ -43,5 +43,5 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          databricks fs cp ./target/manifest.json dbfs:/Volumes/your_catalog/your_schema/your_volume/manifest.json --overwrite
+          databricks fs cp ./target/manifest.json dbfs:/Volumes/analytics/default/dbt_state/manifest.json --overwrite
       
