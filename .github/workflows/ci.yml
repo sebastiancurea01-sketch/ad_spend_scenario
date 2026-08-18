@@ -36,8 +36,10 @@ jobs:
       - name: Lint SQL with sqlfluff
         run: |
           docker run --rm \
-            -v ${PWD}/models:/app/models \
-            dbt-local sqlfluff lint models/ --dialect databricks
+            -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
+            -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
+            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
+            dbt-ci sh -c "dbt deps && sqlfluff lint models/"
 
       # To run Slim CI, dbt needs the production state
       - name: Run dbt Slim CI in Docker
