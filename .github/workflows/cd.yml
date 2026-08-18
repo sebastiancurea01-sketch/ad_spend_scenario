@@ -34,8 +34,8 @@ jobs:
           docker run --rm \
             -v ${PWD}/target:/usr/app/target \
             -e DBT_DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
-            -e DBT_DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DATABRICKS_HTTP_PATH }}" \
+            -e TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
             dbt-local sh -c "dbt deps && dbt build --target prod"
 
       - name: Upload updated manifest.json to Databricks Volume
