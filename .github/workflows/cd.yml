@@ -39,7 +39,8 @@ jobs:
 
       - name: Upload updated manifest.json to Databricks Volume
         env:
-          DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+          # Dynamically prepends https:// for databricks-cli
+          DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
           DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
         run: |
           databricks fs cp ./target/manifest.json \
