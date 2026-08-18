@@ -11,11 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TOKEN: ${{ secrets.TOKEN }}
       DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
       DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
-      # Databricks CLI credentials
-      DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
+      # Databricks CLI credentials (requires https:// prefix)
+      DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
       DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
 
     steps:
