@@ -27,7 +27,7 @@ SELECT
     coalesce(p.total_conversions, 0) AS total_conversions,
     coalesce(p.total_sessions, 0) AS total_sessions,
 
-    -- Calculation: Return on Ad Spend
+    -- Calculation: ROAS
     CASE
         WHEN s.total_spend > 0 THEN round(p.total_revenue / s.total_spend, 2)
     END AS roas,
