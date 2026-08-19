@@ -16,10 +16,10 @@ jobs:
           DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
           DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
         run: |
-                curl -s -X POST "${DATABRICKS_HOST}/api/2.0/sql/statements" \
-                  -H "Authorization: Bearer ${DATABRICKS_TOKEN}" \
+                curl -s -X POST "${DBT_DATABRICKS_HOST}/api/2.0/sql/statements" \
+                  -H "Authorization: Bearer ${DBT_DATABRICKS_TOKEN}" \
                   -H "Content-Type: application/json" \
                   -d "{
-                    \"warehouse_id\": \"${WAREHOUSE_ID}\",
+                    \"warehouse_id\": \"${DATABRICKS_SQL_WAREHOUSE_ID}\",
                     \"statement\": \"DROP SCHEMA IF EXISTS analytics.pr_${PR_NUMBER} CASCADE;\"
                   }"
