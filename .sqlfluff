@@ -8,7 +8,7 @@ profiles_dir = .
 project_dir = .
 
 [sqlfluff:rules:capitalisation.keywords]
-capitalisation_policy = lower
+capitalisation_policy = upper
 
 [sqlfluff:rules:capitalisation.identifiers]
 capitalisation_policy = consistent
