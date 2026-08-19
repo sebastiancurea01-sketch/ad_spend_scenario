@@ -22,7 +22,7 @@ SELECT
     END AS is_conversion,
 
     -- first order date per user, derived entirely from orders
-    min(ordered_date) OVER (PARTITION BY o.user_id) AS first_order_date,
+    min(o.ordered_date) OVER (PARTITION BY o.user_id) AS first_order_date,
 
     -- new customer flag
     CASE

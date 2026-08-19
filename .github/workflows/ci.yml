@@ -50,4 +50,4 @@ jobs:
             -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
             -e DBT_SCHEMA="pr_${{ github.event.number }}" \
-            dbt-local sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target dev_scratch; else dbt build --target dev_scratch; fi"
+            dbt-local sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target ci; else dbt build --target ci; fi"
