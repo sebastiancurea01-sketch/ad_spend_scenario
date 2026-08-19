@@ -2,20 +2,22 @@ WITH SOURCE AS (
     SELECT * FROM {{ source('internal_data', 'order') }}
 ),
 
-renamed_and_cast AS (SELECT
-    CAST(order_id AS STRING) AS order_id,
-    CAST(created_at AS TIMESTAMP) AS ordered_at,
-    CAST(created_at AS DATE) AS ordered_date, -- New column for easy daily reporting
-    CAST(website_session_id AS STRING) AS session_id,
-    CAST(user_id AS STRING) AS user_id,
-    CAST(primary_product_id AS STRING) AS primary_product_id,
-    CAST(items_purchased AS INT) AS items_purchased,
-    CAST(price_usd AS DECIMAL(10,2)) AS price_usd,
-    CAST(cogs_usd AS DECIMAL(10,2)) AS cogs_usd
-FROM SOURCE
+RENAMED_AND_CAST AS (
+    SELECT
+        CAST(ORDER_ID AS STRING) AS ORDER_ID,
+        CAST(CREATED_AT AS TIMESTAMP) AS ORDERED_AT,
+        CAST(CREATED_AT AS DATE) AS ORDERED_DATE, -- New column for easy daily reporting
+        CAST(WEBSITE_SESSION_ID AS STRING) AS SESSION_ID,
+        CAST(USER_ID AS STRING) AS USER_ID,
+        CAST(PRIMARY_PRODUCT_ID AS STRING) AS PRIMARY_PRODUCT_ID,
+        CAST(ITEMS_PURCHASED AS INT) AS ITEMS_PURCHASED,
+        CAST(PRICE_USD AS DECIMAL(10, 2)) AS PRICE_USD,
+        CAST(COGS_USD AS DECIMAL(10, 2)) AS COGS_USD
+    FROM SOURCE
 )
+
 SELECT
     *,
     -- Metadata column
-    {{ dbt.current_timestamp() }} AS _loaded_at
-FROM renamed_and_cast
+    {{ dbt.current_timestamp() }} AS _LOADED_AT
+FROM RENAMED_AND_CAST
