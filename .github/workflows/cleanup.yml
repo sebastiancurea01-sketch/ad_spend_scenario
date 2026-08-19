@@ -21,5 +21,5 @@ jobs:
                   -H "Content-Type: application/json" \
                   -d "{
                     \"warehouse_id\": \"${WAREHOUSE_ID}\",
-                    \"statement\": \"DROP SCHEMA IF EXISTS analytics.ci_pr_${PR_NUMBER} CASCADE;\"
+                    \"statement\": \"DROP SCHEMA IF EXISTS analytics.pr_${PR_NUMBER} CASCADE;\"
                   }"
