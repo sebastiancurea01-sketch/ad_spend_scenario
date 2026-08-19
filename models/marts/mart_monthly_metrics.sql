@@ -26,7 +26,7 @@ joined AS (
         s.total_spend,
         s.total_clicks
     FROM performance AS p
-    RIGHT JOIN ad_spend AS s
+    LEFT JOIN ad_spend AS s
         ON
             p.date_day = s.date_day
             AND p.utm_source = s.utm_source
@@ -35,9 +35,9 @@ joined AS (
 
 monthly AS (
     SELECT
-        date_trunc('month', date_day) AS month,
         utm_source,
         utm_campaign,
+        date_trunc('month', date_day) AS month,
         sum(total_revenue) AS total_revenue,
         sum(total_sessions) AS total_sessions,
         sum(total_conversions) AS total_conversions,
