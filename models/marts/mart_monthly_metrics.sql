@@ -5,16 +5,16 @@
   )
 }}
 
-with performance as (
-    select * from {{ ref('int_daily_performance_summarized') }}
+WITH performance AS (
+    SELECT * FROM {{ ref('int_daily_performance_summarized') }}
 ),
 
-ad_spend as (
-    select * from {{ ref('stg_ad_spend') }}
+ad_spend AS (
+    SELECT * FROM {{ ref('stg_ad_spend') }}
 ),
 
-joined as (
-    select
+joined AS (
+    SELECT
         p.date_day,
         p.utm_source,
         p.utm_campaign,
@@ -25,32 +25,32 @@ joined as (
         p.returning_customers,
         s.total_spend,
         s.total_clicks
-    from performance as p
-    right join ad_spend as s
-        on
+    FROM performance AS p
+    RIGHT JOIN ad_spend AS s
+        ON
             p.date_day = s.date_day
-            and p.utm_source = s.utm_source
-            and p.utm_campaign = s.utm_campaign
+            AND p.utm_source = s.utm_source
+            AND p.utm_campaign = s.utm_campaign
 ),
 
-monthly as (
-    select
-        date_trunc('month', date_day) as month,
+monthly AS (
+    SELECT
+        date_trunc('month', date_day) AS month,
         utm_source,
         utm_campaign,
-        sum(total_revenue) as total_revenue,
-        sum(total_sessions) as total_sessions,
-        sum(total_conversions) as total_conversions,
-        sum(new_customers) as new_customers,
-        sum(returning_customers) as returning_customers,
-        sum(total_spend) as total_spend,
-        sum(total_clicks) as total_clicks
-    from joined
-    group by 1, 2, 3
+        sum(total_revenue) AS total_revenue,
+        sum(total_sessions) AS total_sessions,
+        sum(total_conversions) AS total_conversions,
+        sum(new_customers) AS new_customers,
+        sum(returning_customers) AS returning_customers,
+        sum(total_spend) AS total_spend,
+        sum(total_clicks) AS total_clicks
+    FROM joined
+    GROUP BY 1, 2, 3
 ),
 
-final as (
-    select
+final AS (
+    SELECT
         month,
         utm_source,
         utm_campaign,
@@ -66,50 +66,50 @@ final as (
         round(
             total_revenue
             / nullif(total_spend, 0), 2
-        ) as roas,
+        ) AS roas,
         round(
             total_spend
             / nullif(total_conversions, 0), 2
-        ) as cpa,
+        ) AS cpa,
         round(
             total_conversions
             / nullif(total_sessions, 0), 4
-        ) as conversion_rate,
+        ) AS conversion_rate,
         round(
             total_spend
             / nullif(new_customers, 0), 2
-        ) as cac_usd,
+        ) AS cac_usd,
         round(
             total_revenue
             / nullif(total_conversions, 0), 2
-        ) as avg_ltv_usd,
+        ) AS avg_ltv_usd,
 
         -- churn rate: % of last month's customers who did not return
         round(
             1 - (
                 returning_customers
                 / nullif(
-                    lag(total_conversions, 1) over (
-                        partition by utm_source, utm_campaign
-                        order by month
+                    lag(total_conversions, 1) OVER (
+                        PARTITION BY utm_source, utm_campaign
+                        ORDER BY month
                     ), 0
                 )
             ), 4
-        ) as churn_rate,
+        ) AS churn_rate,
 
         -- yoy growth: revenue vs same month prior year
         round(
-            (total_revenue - lag(total_revenue, 12) over (
-                partition by utm_source, utm_campaign
-                order by month
+            (total_revenue - lag(total_revenue, 12) OVER (
+                PARTITION BY utm_source, utm_campaign
+                ORDER BY month
             ))
-            / nullif(lag(total_revenue, 12) over (
-                partition by utm_source, utm_campaign
-                order by month
+            / nullif(lag(total_revenue, 12) OVER (
+                PARTITION BY utm_source, utm_campaign
+                ORDER BY month
             ), 0), 4
-        ) as yoy_revenue_growth
+        ) AS yoy_revenue_growth
 
-    from monthly
+    FROM monthly
 )
 
-select * from final
+SELECT * FROM final

@@ -2,20 +2,22 @@ WITH SOURCE AS (
     SELECT * FROM {{ source('internal_data', 'website_session') }}
 ),
 
-renamed_and_cast AS (SELECT
-    CAST(website_session_id AS STRING) AS session_id,
-    CAST(created_at AS TIMESTAMP) AS session_at,
-    CAST(created_at AS DATE) AS session_date, -- New column for easy daily reporting
-    CAST(user_id AS STRING) AS user_id,
-    CAST(utm_source AS STRING) AS utm_source,
-    CAST(utm_campaign AS STRING) AS utm_campaign,
-    CAST(utm_content AS STRING) AS utm_content,
-    CAST(device_type AS STRING) AS device_type,
-    CAST(http_referer AS STRING) AS http_referer
-FROM SOURCE
+RENAMED_AND_CAST AS (
+    SELECT
+        CAST(WEBSITE_SESSION_ID AS STRING) AS SESSION_ID,
+        CAST(CREATED_AT AS TIMESTAMP) AS SESSION_AT,
+        CAST(CREATED_AT AS DATE) AS SESSION_DATE, -- New column for easy daily reporting
+        CAST(USER_ID AS STRING) AS USER_ID,
+        CAST(UTM_SOURCE AS STRING) AS UTM_SOURCE,
+        CAST(UTM_CAMPAIGN AS STRING) AS UTM_CAMPAIGN,
+        CAST(UTM_CONTENT AS STRING) AS UTM_CONTENT,
+        CAST(DEVICE_TYPE AS STRING) AS DEVICE_TYPE,
+        CAST(HTTP_REFERER AS STRING) AS HTTP_REFERER
+    FROM SOURCE
 )
+
 SELECT
     *,
     -- Metadata column
-    {{ dbt.current_timestamp() }} AS _loaded_at
-FROM renamed_and_cast
+    {{ dbt.current_timestamp() }} AS _LOADED_AT
+FROM RENAMED_AND_CAST

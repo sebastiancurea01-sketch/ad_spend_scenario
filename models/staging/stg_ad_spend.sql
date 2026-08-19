@@ -1,19 +1,22 @@
 WITH SOURCE AS (
     SELECT * FROM {{ source('external_marketing', 'ad_spend') }}
 ),
+
 -- comment
-renamed_and_cast AS (SELECT
-    CAST(reporting_date AS DATE) AS date_day,
-    LOWER(utm_source) AS utm_source,
-    LOWER(utm_campaign) AS utm_campaign,
-    CAST(total_spend AS DECIMAL(10,2)) AS total_spend,
-    CAST(total_clicks AS INT) AS total_clicks
-FROM SOURCE
+RENAMED_AND_CAST AS (
+    SELECT
+        CAST(REPORTING_DATE AS DATE) AS DATE_DAY,
+        CAST(TOTAL_SPEND AS DECIMAL(10, 2)) AS TOTAL_SPEND,
+        CAST(TOTAL_CLICKS AS INT) AS TOTAL_CLICKS,
+        LOWER(UTM_SOURCE) AS UTM_SOURCE,
+        LOWER(UTM_CAMPAIGN) AS UTM_CAMPAIGN
+    FROM SOURCE
 )
+
 SELECT
     *,
     -- Metadata column
-    {{ dbt.current_timestamp() }} AS _loaded_at
-FROM renamed_and_cast
+    {{ dbt.current_timestamp() }} AS _LOADED_AT
+FROM RENAMED_AND_CAST
 
-ORDER BY date_day DESC
+ORDER BY DATE_DAY DESC
