@@ -9,7 +9,7 @@ WITH spend AS (
 
     -- BEST PRACTICE: Filtering data as early as possible to save computing cost
     {% if is_incremental() %}
-        WHERE s.date_day > (SELECT max(date_day) FROM {{ this }}) -- sqlfluff:noqa: RF02, RF03
+        WHERE s.date_day > (SELECT max(date_day) FROM {{ this }} AS t) 
     {% endif %}
 ),
 
