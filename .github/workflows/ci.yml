@@ -5,29 +5,10 @@ on:
     branches:
       - main
 
-# ADDED to grant permission to ghcr
-permissions:
-  contents: read
-  packages: read
-
-# ADDED
-env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/dbt-ci-image
-
 jobs:
   slim_ci_run:
     runs-on: ubuntu-latest
-  
-  # ADDED
-    container:
-      image: ghcr.io/${{ github.repository_owner }}/dbt-ci-image:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
 
-<<<<<<< HEAD
-    # NO CHANGE
-=======
     permissions:
       contents: read
       packages: read
@@ -36,23 +17,17 @@ jobs:
       IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/dbt-ci-image
       IMAGE_TAG: latest
 
->>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      ## ADDED as requested from logs error
-      - name: Mark workspace as safe for git
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      
       - name: Fetch Main Branch
         run: git fetch origin main:main
 
-      # remove install Databricks CLI
+      
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@v0.221.0
 
-<<<<<<< HEAD
-      # NO CHANGE
-=======
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -63,7 +38,6 @@ jobs:
       - name: Pull CI image
         run: docker pull "${IMAGE_NAME}:${IMAGE_TAG}"
 
->>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
       - name: Fetch Prod Manifest from Databricks Volume
         env:
           # Dynamically prepends https:// for databricks-cli while leaving the GitHub Secret clean for dbt
@@ -74,11 +48,6 @@ jobs:
           databricks fs cp dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
             ./state/manifest.json || echo "No production manifest found."
       
-<<<<<<< HEAD
-      # REMOVE build docker image
-
-=======
->>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
       - name: Lint SQL with sqlfluff
         run: |
           docker run --rm \
@@ -88,16 +57,11 @@ jobs:
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && sqlfluff lint models/"
 
-      # NO CHANGE just docker run -> dbt run
+      # To run Slim CI, dbt needs the production state
       - name: Run dbt Slim CI in Docker
         run: |
-<<<<<<< HEAD
-          dbt run --rm \
-            -v ${PWD}/state:/app/state \
-=======
           docker run --rm \
             -v "${{ github.workspace }}:/app" \
->>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
             -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
             -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
