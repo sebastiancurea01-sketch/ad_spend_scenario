@@ -3,7 +3,7 @@
         materialized='incremental',
     )
 }}
--- CTE filtering data
+-- filtering data
 WITH spend AS (
     SELECT * FROM {{ ref('stg_ad_spend') }}
 
