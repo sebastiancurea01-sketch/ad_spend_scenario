@@ -30,6 +30,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       
+      - name: Mark workspace as safe for git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      
       - name: Fetch Main Branch
         run: git fetch origin main:main
 
