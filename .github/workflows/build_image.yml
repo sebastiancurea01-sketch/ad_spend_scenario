@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docker/Dockerfile'
+      - 'Dockerfile'
       - 'requirements.txt'
       - '.github/workflows/build-image.yml'
   workflow_dispatch: {}  # manual trigger for emergencies
@@ -35,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker/Dockerfile
+          file: Dockerfile
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
