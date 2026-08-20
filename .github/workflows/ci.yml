@@ -19,11 +19,11 @@ jobs:
     runs-on: ubuntu-latest
   
   # ADDED
-  container:
-    image: ${{ env.IMAGE_NAME }}:latest
-    credentials:
-      username: ${{ github.actor }}
-      password: ${{ secrets.GITHUB_TOKEN }}
+    container:
+      image: ${{ env.IMAGE_NAME }}:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     # NO CHANGE
     steps:
