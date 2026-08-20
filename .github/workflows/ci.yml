@@ -25,7 +25,18 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+<<<<<<< HEAD
     # NO CHANGE
+=======
+    permissions:
+      contents: read
+      packages: read
+
+    env:
+      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/dbt-ci-image
+      IMAGE_TAG: latest
+
+>>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -39,7 +50,20 @@ jobs:
 
       # remove install Databricks CLI
 
+<<<<<<< HEAD
       # NO CHANGE
+=======
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull CI image
+        run: docker pull "${IMAGE_NAME}:${IMAGE_TAG}"
+
+>>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
       - name: Fetch Prod Manifest from Databricks Volume
         env:
           # Dynamically prepends https:// for databricks-cli while leaving the GitHub Secret clean for dbt
@@ -50,23 +74,32 @@ jobs:
           databricks fs cp dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
             ./state/manifest.json || echo "No production manifest found."
       
+<<<<<<< HEAD
       # remove build docker image
 
+=======
+>>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
       - name: Lint SQL with sqlfluff
         run: |
           docker run --rm \
+            -v "${{ github.workspace }}:/app" \
             -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
             -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
-            dbt-local sh -c "dbt deps && sqlfluff lint models/"
+            "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && sqlfluff lint models/"
 
       # NO CHANGE just docker run -> dbt run
       - name: Run dbt Slim CI in Docker
         run: |
+<<<<<<< HEAD
           dbt run --rm \
             -v ${PWD}/state:/app/state \
+=======
+          docker run --rm \
+            -v "${{ github.workspace }}:/app" \
+>>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
             -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
             -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
             -e DBT_SCHEMA="pr_${{ github.event.number }}" \
-            dbt-local sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target ci; else dbt build --target ci; fi"
+            "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target ci; else dbt build --target ci; fi"
