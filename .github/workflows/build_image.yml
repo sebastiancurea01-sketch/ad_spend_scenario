@@ -6,7 +6,7 @@ on:
     paths:
       - 'Dockerfile'
       - 'requirements.txt'
-      - '.github/workflows/build-image.yml'
+      - '.github/workflows/build_image.yml'
   workflow_dispatch: {}  # manual trigger for emergencies
 
 permissions:
