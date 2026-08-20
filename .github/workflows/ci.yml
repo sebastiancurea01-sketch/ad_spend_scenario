@@ -75,7 +75,7 @@ jobs:
             ./state/manifest.json || echo "No production manifest found."
       
 <<<<<<< HEAD
-      # remove build docker image
+      # REMOVE build docker image
 
 =======
 >>>>>>> 2fe0a2a2e4fc26135548d512b76faac22ebffd7a
