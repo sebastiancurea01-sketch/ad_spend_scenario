@@ -20,7 +20,7 @@ jobs:
   
   # ADDED
     container:
-      image: ${{ env.IMAGE_NAME }}:latest
+      image: ghcr.io/${{ github.repository_owner }}/dbt-ci-image:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
