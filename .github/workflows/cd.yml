@@ -10,7 +10,13 @@ jobs:
   dbt-prod-run:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: read
+
     env:
+      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/dbt-ci-image
+      IMAGE_TAG: latest
       DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
       DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
       # Databricks CLI credentials (requires https:// prefix)
@@ -24,17 +30,24 @@ jobs:
       - name: Install Databricks CLI
         uses: databricks/setup-cli@v0.221.0
 
-      - name: Build Docker Image
-        run: docker build -t dbt-local .
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull CI image
+        run: docker pull "${IMAGE_NAME}:${IMAGE_TAG}"
       
       - name: Run dbt Production Build in Docker
         run: |
           docker run --rm \
-            -v ${PWD}/target:/app/target \
+            -v "${{ github.workspace }}:/app" \
             -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
             -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
             -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
-            dbt-local sh -c "dbt deps && dbt build --target prod"
+            "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && dbt build --target prod"
 
       - name: Upload updated manifest.json to Databricks Volume
         env:
