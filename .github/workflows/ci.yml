@@ -49,8 +49,8 @@ jobs:
             -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
             -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
-            "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && sqlfluff lint models/"
-
+            -e DBT_SCHEMA="pr_${{ github.event.number }}" \
+            "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && sqlfluff lint models/" 
       # To run Slim CI, dbt needs the production state
       - name: Run dbt Slim CI in Docker
         run: |
