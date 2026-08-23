@@ -1,5 +1,5 @@
 WITH SOURCE AS (
-    SELECT * FROM {{ source('internal_data', 'order') }}
+    SELECT * FROM {{ source('internal_data', 'orders') }}
 ),
 
 RENAMED_AND_CAST AS (
