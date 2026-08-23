@@ -37,23 +37,21 @@ jobs:
       - name: Pull CI image
         run: docker pull "${IMAGE_NAME}:${IMAGE_TAG}"
 
-      - name: Fetch Prod Manifest from Databricks Volume
-        env:
-          # Dynamically prepends https:// for databricks-cli while leaving the GitHub Secret clean for dbt
-          DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
-          DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
-        run: |
-          mkdir -p ./state
-          databricks fs cp dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
-            ./state/manifest.json || echo "No production manifest found."
+      - name: Restore Production Manifest from Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ./prod_manifest/manifest.json
+          key: dbt-manifest-ci-${{ github.sha }}
+          restore-keys: |
+            dbt-manifest-main-
       
       - name: Lint SQL with sqlfluff
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/app" \
-            -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
-            -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
-            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
+            -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
+            -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
+            -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && sqlfluff lint models/"
 
       # To run Slim CI, dbt needs the production state
@@ -61,9 +59,9 @@ jobs:
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/app" \
-            -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
-            -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
-            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
+            -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
+            -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
+            -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
             -e DBT_SCHEMA="pr_${{ github.event.number }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target ci; else dbt build --target ci; fi"
 
