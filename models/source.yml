@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: internal_data
     # This usually points to your main Databricks storage
-    database: raw
+    database: TOY_STORE_RAW
     schema: website_source 
          
     tables:
