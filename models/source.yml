@@ -2,10 +2,6 @@ version: 2
 
 sources:
   - name: internal_data
-<<<<<<< HEAD
-    # This usually points to your main Databricks storage
-=======
->>>>>>> b7b9361d003970df572b5beccd7a3375cd8e9ff9
     database: TOY_STORE_RAW
     schema: LANDING
          
