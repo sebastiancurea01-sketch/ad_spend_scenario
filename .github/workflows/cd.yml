@@ -41,5 +41,16 @@ jobs:
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
             -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && dbt build --target prod"
+      
+      - name: Stage Manifest for Cache
+        run: |
+          mkdir -p ./prod_manifest
+          cp target/manifest.json ./prod_manifest/manifest.json
+
+      - name: Save Production Manifest to Cache
+        uses: actions/cache/save@v4
+        with:
+          path: ./prod_manifest/manifest.json
+          key: dbt-manifest-main-${{ github.run_id }}
 
 
