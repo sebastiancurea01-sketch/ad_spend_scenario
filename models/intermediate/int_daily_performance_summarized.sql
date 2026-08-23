@@ -9,7 +9,7 @@ SELECT
     SUM(price_usd) AS total_revenue,
     SUM(is_conversion) AS total_conversions,
     COUNT(session_id) AS total_sessions,
-    -- new vs returning — COUNT the flag, don't carry it raw
+
     COUNT(DISTINCT CASE
         WHEN is_new_customer = true
             THEN user_id
