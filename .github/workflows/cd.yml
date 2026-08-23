@@ -39,7 +39,7 @@ jobs:
             -v "${{ github.workspace }}:/app" \
             -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
-            -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
+            -e SNOWFLAKE_PRIVATE_KEY="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && dbt build --target prod"
       
       - name: Stage Manifest for Cache

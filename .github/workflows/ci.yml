@@ -23,9 +23,6 @@ jobs:
       
       - name: Fetch Main Branch
         run: git fetch origin main:main
- 
-      - name: Install Databricks CLI
-        uses: databricks/setup-cli@v0.221.0
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -51,7 +48,7 @@ jobs:
             -v "${{ github.workspace }}:/app" \
             -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
-            -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
+            -e SNOWFLAKE_PRIVATE_KEY="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" \
             -e DBT_SCHEMA="pr_${{ github.event.number }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && sqlfluff lint models/" 
       # To run Slim CI, dbt needs the production state
@@ -61,7 +58,7 @@ jobs:
             -v "${{ github.workspace }}:/app" \
             -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
-            -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
+            -e SNOWFLAKE_PRIVATE_KEY="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" \
             -e DBT_SCHEMA="pr_${{ github.event.number }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target ci; else dbt build --target ci; fi"
 
