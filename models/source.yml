@@ -2,9 +2,8 @@ version: 2
 
 sources:
   - name: internal_data
-    # This usually points to your main Databricks storage
     database: TOY_STORE_RAW
-    schema: website_source 
+    schema: LANDING
          
     tables:
       - name: website_sessions

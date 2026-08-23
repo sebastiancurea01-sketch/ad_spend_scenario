@@ -17,18 +17,11 @@ jobs:
     env:
       IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/dbt-ci-image
       IMAGE_TAG: latest
-      DBT_DATABRICKS_HOST: ${{ secrets.DBT_DATABRICKS_HOST }}
-      DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_DATABRICKS_HTTP_PATH }}
-      # Databricks CLI credentials (requires https:// prefix)
-      DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
-      DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
+
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Install Databricks CLI
-        uses: databricks/setup-cli@v0.221.0
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -44,28 +37,9 @@ jobs:
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/app" \
-            -e DBT_DATABRICKS_HOST="${{ secrets.DBT_DATABRICKS_HOST }}" \
-            -e DBT_DATABRICKS_HTTP_PATH="${{ secrets.DBT_DATABRICKS_HTTP_PATH }}" \
-            -e DBT_DATABRICKS_TOKEN="${{ secrets.DBT_DATABRICKS_TOKEN }}" \
+            -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
+            -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
+            -e DBT_SNOWFLAKE_PASSWORD="${{ secrets.DBT_SNOWFLAKE_PASSWORD }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && dbt build --target prod"
 
-      - name: Upload updated manifest.json to Databricks Volume
-        env:
-          # Dynamically prepends https:// for databricks-cli
-          DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
-          DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
-        run: |
-          echo "=== Checking if manifest.json exists ==="
-          ls -la ./target/manifest.json || echo "manifest.json NOT found!"
-          
-          echo "=== Testing Databricks CLI connection ==="
-          databricks fs ls dbfs:/Volumes/analytics/default/ || echo "Cannot access Volumes directory"
-          
-          echo "=== Creating dbt_state directory if it doesn't exist ==="
-          databricks fs mkdirs dbfs:/Volumes/analytics/default/dbt_state || echo "Directory may already exist"
-          
-          echo "=== Uploading manifest.json ==="
-          databricks fs cp ./target/manifest.json \
-            dbfs:/Volumes/analytics/default/dbt_state/manifest.json \
-            --overwrite
 

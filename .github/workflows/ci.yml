@@ -23,8 +23,7 @@ jobs:
       
       - name: Fetch Main Branch
         run: git fetch origin main:main
-
-      
+ 
       - name: Install Databricks CLI
         uses: databricks/setup-cli@v0.221.0
 
