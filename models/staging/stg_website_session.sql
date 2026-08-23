@@ -1,5 +1,5 @@
 WITH SOURCE AS (
-    SELECT * FROM {{ source('internal_data', 'website_session') }}
+    SELECT * FROM {{ source('internal_data', 'website_sessions') }}
 ),
 
 RENAMED_AND_CAST AS (
