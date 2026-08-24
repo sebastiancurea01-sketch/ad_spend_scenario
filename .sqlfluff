@@ -5,7 +5,7 @@ max_line_length = 120
 exclude_rules = RF04
 
 [sqlfluff:templater:dbt]
-profiles_dir = .
+profiles_dir = ~/.dbt
 project_dir = .
 target = ci
 
