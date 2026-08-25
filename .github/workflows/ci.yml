@@ -38,9 +38,9 @@ jobs:
         run: |
           mkdir -p ~/.dbt
           cat <<EOF > ~/.dbt/profiles.yml
-          ecommerce_growth
+          ecommerce_growth:
             target: ci
-            outputs
+            outputs:
               ci:
                 type: snowflake
                 account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
