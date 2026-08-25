@@ -3,7 +3,7 @@
         materialized='incremental',
     )
 }}
--- filtering data
+-- Filtering data
 WITH spend AS (
     SELECT * FROM {{ ref('stg_ad_spend') }}
 
