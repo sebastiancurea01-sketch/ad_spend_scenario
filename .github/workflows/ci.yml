@@ -21,9 +21,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      - name: Fetch Main Branch
-        run: git fetch origin main:main
-      
       - name: Create dynamic dbt profiles.yml
         env:
           account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
@@ -54,6 +51,9 @@ jobs:
                 schema: "{{ env_var('DBT_SCHEMA') }}"
                 threads: "{{ env_var('DBT_THREADS', '4') | int }}"
           EOF
+      
+      - name: Fetch Main Branch
+        run: git fetch origin main:main
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
