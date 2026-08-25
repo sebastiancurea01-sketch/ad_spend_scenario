@@ -23,6 +23,37 @@ jobs:
       
       - name: Fetch Main Branch
         run: git fetch origin main:main
+      
+      - name: Create dynamic dbt profiles.yml
+        env:
+          account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
+          user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
+          private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
+          role: ACCOUNTADMIN
+          database: TOY_STORE_DEV
+          warehouse: DBT_WH
+          # Dynamically creates a temporary schema for every PR (e.g., pr_42)
+          # This prevents developers from overwriting each other's test data
+          schema: "{{ env_var('DBT_SCHEMA') }}"
+        run: |
+          mkdir -p ~/.dbt
+          cat <<EOF > ~/.dbt/profiles.yml
+          ecommerce_growth
+            target: ci
+            outputs
+              ci:
+                type: snowflake
+                account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
+                user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
+                private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
+                role: ACCOUNTADMIN
+                database: TOY_STORE_DEV
+                warehouse: DBT_WH
+                # Dynamically creates a temporary schema for every PR (e.g., pr_42)
+                # This prevents developers from overwriting each other's test data
+                schema: "{{ env_var('DBT_SCHEMA') }}"
+                threads: "{{ env_var('DBT_THREADS', '4') | int }}"
+          EOF
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -50,6 +81,8 @@ jobs:
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
             -e SNOWFLAKE_PRIVATE_KEY="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" \
             -e DBT_SCHEMA="pr_${{ github.event.number }}" \
+            -v ${{ github.workspace }}/.dbt:/root/.dbt \
+            -v ${{ github.workspace }}:/usr/app \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && sqlfluff lint models/" 
       # To run Slim CI, dbt needs the production state
       - name: Run dbt Slim CI in Docker
@@ -60,6 +93,8 @@ jobs:
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
             -e SNOWFLAKE_PRIVATE_KEY="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" \
             -e DBT_SCHEMA="pr_${{ github.event.number }}" \
+            -v ${{ github.workspace }}/.dbt:/root/.dbt \
+            -v ${{ github.workspace }}:/usr/app \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target ci; else dbt build --target ci; fi"
 
       
