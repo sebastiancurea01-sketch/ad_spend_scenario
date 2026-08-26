@@ -9,7 +9,4 @@ ecommerce_growth:
         role: ACCOUNTADMIN
         database: TOY_STORE_DEV
         warehouse: DBT_WH
-        # Dynamically creates a temporary schema for every PR (e.g., pr_42)
-        # This prevents developers from overwriting each other's test data
         schema: "{{ env_var('DBT_SCHEMA') }}"
-        threads: "{{ env_var('DBT_THREADS', '4') | int }}"
