@@ -2,11 +2,11 @@ ecommerce_growth:
     target: ci
     outputs:
         ci:
-        type: snowflake
-        account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
-        user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
-        private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
-        role: ACCOUNTADMIN
-        database: TOY_STORE_DEV
-        warehouse: DBT_WH
-        schema: "{{ env_var('DBT_SCHEMA') }}"
+            type: snowflake
+            account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
+            user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
+            private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
+            role: ACCOUNTADMIN
+            database: TOY_STORE_DEV
+            warehouse: DBT_WH
+            schema: DBT_DEV
