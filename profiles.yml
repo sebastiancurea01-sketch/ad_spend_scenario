@@ -9,4 +9,4 @@ ecommerce_growth:
             role: ACCOUNTADMIN
             database: TOY_STORE_DEV
             warehouse: DBT_WH
-            schema: DBT_DEV
+            schema: "{{ env_var('DBT_SCHEMA') }}"
