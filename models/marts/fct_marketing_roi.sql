@@ -3,11 +3,11 @@
         materialized='incremental',
     )
 }}
--- filtering data
+-- Filtering data
 WITH spend AS (
     SELECT * FROM {{ ref('stg_ad_spend') }}
 
-    --  filtering data as early as possible to save computing cost
+    --  Filtering data as early as possible to save computing cost
     {% if is_incremental() %}
         WHERE date_day > (SELECT max(t.date_day) FROM {{ this }} AS t)
     {% endif %}
