@@ -80,9 +80,9 @@ jobs:
             -e DBT_SNOWFLAKE_ACCOUNT="${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}" \
             -e DBT_SNOWFLAKE_USER="${{ secrets.DBT_SNOWFLAKE_USER }}" \
             -e SNOWFLAKE_PRIVATE_KEY="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" \
-            -e DBT_SCHEMA="pr_${{ github.event.number }}" \
-            -v ${{ github.workspace }}/.dbt:/root/.dbt \
-            -v ${{ github.workspace }}:/usr/app \
+            -e ACCOUNTADMIN \
+            -e TOY_STORE_DEV \
+            -e DBT_WH \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && if [ -f state/manifest.json ]; then dbt build --select state:modified+ --defer --state state --target ci; else dbt build --target ci; fi"
 
       
