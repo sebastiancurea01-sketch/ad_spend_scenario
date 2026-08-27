@@ -5,7 +5,7 @@ ecommerce_growth:
             type: snowflake
             account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
             user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
-            private_key_path: "/.snowflake-keys/rsa_key.p8"
+            private_key_path: "{{ env_var('PRIVATE_KEY_PATH') }}"
             role: ACCOUNTADMIN
             database: ANALYTICS_DEV
             warehouse: DBT_WH
