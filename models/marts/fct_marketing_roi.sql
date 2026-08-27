@@ -25,19 +25,19 @@ SELECT
     coalesce(p.total_conversions, 0) AS total_conversions,
     coalesce(p.total_sessions, 0) AS total_sessions,
 
-    -- Calculation: ROAS
+    -- ROAS
     CASE
         WHEN s.total_spend > 0 THEN round(p.total_revenue / s.total_spend, 2)
     END AS roas,
 
-    -- Calculation: Cost Per Acquisition 
+    -- Cost Per Acquisition 
     CASE
         WHEN
             p.total_conversions > 0
             THEN round(s.total_spend / p.total_conversions, 2)
     END AS cpa,
 
-    -- Calculation: Revenue coming from brand channel
+    -- Revenue coming from brand channel
     CASE
         WHEN s.utm_campaign = 'brand'
             THEN coalesce(p.total_revenue, 0)
