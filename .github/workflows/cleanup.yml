@@ -1,27 +1,24 @@
-name: CI Schema Cleanup
+name: dbt CI Schema Cleanup
 
 on:
   pull_request:
     types: [closed]
 
 jobs:
-  drop_ci_schema:
+  cleanup:
     runs-on: ubuntu-latest
-    steps:
-      - name: Install Databricks CLI
-        uses: databricks/setup-cli@v0.221.0
+    env:
+      DBT_SNOWFLAKE_ACCOUNT: ${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}
+      DBT_SNOWFLAKE_USER: ${{ secrets.DBT_SNOWFLAKE_USER }}
+      SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
 
-      - name: Drop Temporary PR Schema
-        env:
-          DATABRICKS_HOST: "https://${{ secrets.DBT_DATABRICKS_HOST }}"
-          DATABRICKS_TOKEN: ${{ secrets.DBT_DATABRICKS_TOKEN }}
-          DATABRICKS_SQL_WAREHOUSE_ID: ${{ secrets.DATABRICKS_SQL_WAREHOUSE_ID }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Install Snowflake CLI
+        run: pip install snowflake-cli-labs
+
+      - name: Drop ephemeral CI schema
         run: |
-          curl -s -X POST "${DATABRICKS_HOST}/api/2.0/sql/statements" \
-            -H "Authorization: Bearer ${DATABRICKS_TOKEN}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"warehouse_id\": \"${DATABRICKS_SQL_WAREHOUSE_ID}\",
-              \"statement\": \"DROP SCHEMA IF EXISTS analytics.pr_${PR_NUMBER} CASCADE;\"
-            }"
+          snow sql -q "DROP SCHEMA IF EXISTS ANALYTICS_CI.PR_${{ github.event.pull_request.number }} CASCADE;"
+        env:
+          SNOWFLAKE_ROLE: ACCOUNTADMIN
+          SNOWFLAKE_WAREHOUSE: DBT_WH
