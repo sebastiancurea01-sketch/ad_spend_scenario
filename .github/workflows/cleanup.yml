@@ -30,11 +30,11 @@ jobs:
         run: |
           mkdir -p ~/.snowflake
           
-          # 1. Write PEM key safely to runner disk
+          # 1. Write key and restrict key permissions
           echo "$SNOWFLAKE_PRIVATE_KEY" > /tmp/snowflake_key.p8
           chmod 600 /tmp/snowflake_key.p8
 
-          # 2. Generate native config.toml
+          # 2. Generate config.toml
           cat <<EOF > ~/.snowflake/config.toml
           [connections.default]
           account = "${SNOWFLAKE_ACCOUNT}"
@@ -45,8 +45,11 @@ jobs:
           private_key_file = "/tmp/snowflake_key.p8"
           EOF
 
-          # 3. Execute statement
+          # 3. Restrict config.toml permissions (Fixes the error)
+          chmod 600 ~/.snowflake/config.toml
+
+          # 4. Execute query
           snow sql -q "DROP SCHEMA IF EXISTS ${SNOWFLAKE_DATABASE}.PR_${PR_NUMBER} CASCADE;"
 
-          # 4. Clean up private key
+          # 5. Cleanup key
           rm -f /tmp/snowflake_key.p8
