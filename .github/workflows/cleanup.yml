@@ -26,5 +26,5 @@ jobs:
             --user "$DBT_SNOWFLAKE_USER" \
             --password "$SNOWFLAKE_PASSWORD" \
             --role "$SNOWFLAKE_ROLE" \
-            --private-key-path "$SNOWFLAKE_PRIVATE_KEY" \
+            --private-key-file "$SNOWFLAKE_PRIVATE_KEY" \
             -q "DROP SCHEMA IF EXISTS ${SNOWFLAKE_DATABASE}.PR_${{ github.event.number }} CASCADE;"
