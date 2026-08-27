@@ -37,7 +37,6 @@ SELECT
             THEN round(s.total_spend / p.total_conversions, 2)
     END AS cpa,
 
-    -- Revenue coming from brand channel
     CASE
         WHEN s.utm_campaign = 'brand'
             THEN coalesce(p.total_revenue, 0)
