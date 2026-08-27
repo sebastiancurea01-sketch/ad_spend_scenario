@@ -1,4 +1,4 @@
-name: dbt CI Schema Cleanup
+name: Cleanup Ephemeral Schemas
 
 on:
   pull_request:
@@ -8,20 +8,17 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
-    environment: ci
-    env:
-      DBT_SNOWFLAKE_ACCOUNT: ${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}
-      DBT_SNOWFLAKE_USER: ${{ secrets.DBT_SNOWFLAKE_USER }}
-      SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
-      SNOWFLAKE_ROLE: ACCOUNTADMIN
-      SNOWFLAKE_WAREHOUSE: DBT_WH
-
     steps:
       - name: Install Snowflake CLI
-        run: pip install snowflake-cli-labs
-
-      - name: Drop ephemeral CI schema
         run: |
-          snow sql \
-            --temporary-connection \
-            -q "DROP SCHEMA IF EXISTS ANALYTICS_CI.CI_PR_${{ github.event.pull_request.number }} CASCADE;"
+          pip install --quiet snowflake-cli-labs
+
+      - name: Drop PR Schema
+        env:
+          DBT_SNOWFLAKE_ACCOUNT: ${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}
+          DBT_SNOWFLAKE_USER: ${{ secrets.DBT_SNOWFLAKE_USER }}
+          SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+          SNOWFLAKE_ROLE: ACCOUNTADMIN
+          SNOWFLAKE_WAREHOUSE: DBT_WH
+        run: |
+          snow sql -q "DROP SCHEMA IF EXISTS ${SNOWFLAKE_CONNECTIONS_DEFAULT_DATABASE}.PR_${{ github.event.number }} CASCADE;"
