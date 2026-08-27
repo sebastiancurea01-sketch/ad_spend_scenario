@@ -7,6 +7,16 @@ ecommerce_growth:
             user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
             private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
             role: ACCOUNTADMIN
-            database: TOY_STORE_DEV
+            database: ANALYTICS_CI
             warehouse: DBT_WH
             schema: "{{ env_var('DBT_SCHEMA') }}"
+
+        prod:
+            type: snowflake
+            account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
+            user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
+            private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
+            role: ACCOUNTADMIN
+            database: ANALYTICS_PROD
+            warehouse: DBT_WH
+            schema: PROD
