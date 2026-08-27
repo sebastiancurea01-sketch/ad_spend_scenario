@@ -12,6 +12,8 @@ jobs:
       DBT_SNOWFLAKE_ACCOUNT: ${{ secrets.DBT_SNOWFLAKE_ACCOUNT }}
       DBT_SNOWFLAKE_USER: ${{ secrets.DBT_SNOWFLAKE_USER }}
       SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+      SNOWFLAKE_ROLE: ACCOUNTADMIN
+      SNOWFLAKE_WAREHOUSE: DBT_WH
 
     steps:
       - name: Install Snowflake CLI
@@ -19,7 +21,6 @@ jobs:
 
       - name: Drop ephemeral CI schema
         run: |
-          snow sql -q "DROP SCHEMA IF EXISTS ANALYTICS_CI.PR_${{ github.event.pull_request.number }} CASCADE;"
-        env:
-          SNOWFLAKE_ROLE: ACCOUNTADMIN
-          SNOWFLAKE_WAREHOUSE: DBT_WH
+          snow sql \
+            --temporary-connection \
+            -q "DROP SCHEMA IF EXISTS ANALYTICS_CI.CI_PR_${{ github.event.pull_request.number }} CASCADE;"
