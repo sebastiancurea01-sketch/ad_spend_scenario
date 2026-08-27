@@ -43,6 +43,7 @@ jobs:
           warehouse = "${SNOWFLAKE_WAREHOUSE}"
           database = "${SNOWFLAKE_DATABASE}"
           private_key_file = "/tmp/snowflake_key.p8"
+          authenticator = "SNOWFLAKE_JWT"
           EOF
 
           # 3. Restrict config.toml permissions (Fixes the error)
