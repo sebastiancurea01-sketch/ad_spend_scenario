@@ -3,7 +3,6 @@
 {{
   config(
     materialized='table',
-    schema='prod_analytics'
   )
 }}
 
@@ -86,7 +85,6 @@ final AS (
             / nullif(total_conversions, 0), 2
         ) AS avg_ltv_usd,
 
-        -- churn rate: % of last month's customers who did not return
         round(
             1 - (
                 returning_customers

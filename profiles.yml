@@ -1,6 +1,18 @@
 ecommerce_growth:
-    target: ci
+    target: dev
     outputs:
+        dev:
+            type: snowflake
+            account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
+            user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
+            private_key_path: "{{ env_var('PRIVATE_KEY_PATH') }}"
+            role: ACCOUNTADMIN
+            database: ANALYTICS_DEV
+            warehouse: DBT_WH
+            schema: DEV
+            threads: 4
+    
+    
         ci:
             type: snowflake
             account: "{{ env_var('DBT_SNOWFLAKE_ACCOUNT') }}"
@@ -20,3 +32,4 @@ ecommerce_growth:
             database: ANALYTICS_PROD
             warehouse: DBT_WH
             schema: PROD
+
