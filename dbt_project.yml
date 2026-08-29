@@ -19,7 +19,6 @@ clean-targets:
 models:
   ecommerce_growth:             
     staging:
-      +schema: "{{ 'staging' if target.name != 'ci' else none }}"
+      +schema: "{{ none if target.name == 'ci' else 'staging' }}"
     intermediate:
-      +schema: "{{ 'intermediate' if target.name != 'ci' else none }}"
-    marts:
+      +schema: "{{ none if target.name == 'ci' else 'intermediate' }}"
