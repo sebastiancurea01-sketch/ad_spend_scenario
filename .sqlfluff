@@ -8,7 +8,7 @@ exclude_rules = RF04
 profiles_dir = ~/.dbt
 profile = ecommerce_growth
 project_dir = .
-target = ci
+target = dev
 
 [sqlfluff:rules:capitalisation.keywords]
 capitalisation_policy = upper
