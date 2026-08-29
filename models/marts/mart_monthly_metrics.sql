@@ -3,7 +3,6 @@
 {{
   config(
     materialized='table',
-    schema='prod_analytics'
   )
 }}
 
