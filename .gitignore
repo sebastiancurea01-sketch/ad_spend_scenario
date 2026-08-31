@@ -13,3 +13,4 @@ dbt_internal_packages/
 profiles.yml/
 .env
 .vscode/
+.sqlfluff.local

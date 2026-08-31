@@ -2,7 +2,6 @@ WITH SOURCE AS (
     SELECT * FROM {{ source('internal_data', 'ad_spend') }}
 ),
 
--- comment
 RENAMED_AND_CAST AS (
     SELECT
         CAST(REPORTING_DATE AS DATE) AS DATE_DAY,

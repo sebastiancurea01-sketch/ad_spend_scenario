@@ -5,7 +5,6 @@ max_line_length = 120
 exclude_rules = RF04
 
 [sqlfluff:templater:dbt]
-# Direct SQLFluff to look in the repository workspace instead of ~/.dbt
 profiles_dir = .
 profile = ecommerce_growth
 project_dir = .
