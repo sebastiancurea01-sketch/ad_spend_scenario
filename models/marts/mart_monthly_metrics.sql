@@ -1,4 +1,3 @@
--- changin with incremental models
 
 {{
   config(
