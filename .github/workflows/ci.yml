@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
+      actions: read
       contents: read
       packages: read
 
@@ -36,13 +37,22 @@ jobs:
       - name: Pull CI image
         run: docker pull "${IMAGE_NAME}:${IMAGE_TAG}"
 
-      - name: Restore Production Manifest from Cache
-        uses: actions/cache/restore@v4
+      - name: Get latest successful CD run ID
+        id: last_run
+        run: |
+          RUN_ID=$(gh run list --workflow=cd.yml --branch=main --status=success \
+                     --limit=1 --json databaseId --jq '.[0].databaseId')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download manifest from that run
+        uses: actions/download-artifact@v4
         with:
-          path: ./prod_manifest/manifest.json
-          key: dbt-manifest-ci-${{ github.sha }}
-          restore-keys: |
-            dbt-manifest-main-
+          name: dbt-manifest
+          path: state
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.last_run.outputs.run_id }}
       
       - name: Lint SQL with sqlfluff
         run: |
