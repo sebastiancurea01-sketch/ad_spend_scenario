@@ -42,12 +42,22 @@ jobs:
             -e SNOWFLAKE_PRIVATE_KEY="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" \
             "${IMAGE_NAME}:${IMAGE_TAG}" sh -c "dbt deps && dbt build --target prod"
       
-      - name: Upload manifest.json for slim CI
+      - name: Stage Manifest for Cache
+        run: |
+          mkdir -p ./prod_manifest
+          cp target/manifest.json ./prod_manifest/manifest.json
+
+      - name: Upload Production Manifest as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: dbt-manifest
-          path: target/manifest.json
-          retention-days: 30
-          overwrite: true   # keep a single rolling artifact, not dbt-manifest-2, -3, etc.
+          path: ./prod_manifest/manifest.json
+          retention-days: 30  # Keep for 30 days
+
+      - name: Save Production Manifest to Cache
+        uses: actions/cache/save@v4
+        with:
+          path: ./prod_manifest/manifest.json
+          key: dbt-manifest-main-${{ github.run_id }}
 
 
