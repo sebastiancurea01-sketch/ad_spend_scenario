@@ -30,7 +30,7 @@ SELECT
         WHEN s.total_spend > 0 THEN round(p.total_revenue / s.total_spend, 2)
     END AS roas,
 
-     CASE
+    CASE
         WHEN
             p.total_conversions > 0
             THEN round(s.total_spend / p.total_conversions, 2)
