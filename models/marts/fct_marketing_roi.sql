@@ -30,7 +30,7 @@ SELECT
         WHEN s.total_spend > 0 THEN round(p.total_revenue / s.total_spend, 2)
     END AS roas,
 
-    -- Cost Per Acquisition 
+    -- Cost Per  
     CASE
         WHEN
             p.total_conversions > 0
