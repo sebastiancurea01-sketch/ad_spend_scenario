@@ -1,5 +1,3 @@
--- changin with incremental models
-
 {{
   config(
     materialized='table',
