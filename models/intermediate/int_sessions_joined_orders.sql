@@ -23,7 +23,6 @@ SELECT
 
     min(o.ordered_date) OVER (PARTITION BY o.user_id) AS first_order_date,
 
-    -- new customer flag
     CASE
         -- session did not convert, no customer
         WHEN o.order_id IS NULL THEN NULL
