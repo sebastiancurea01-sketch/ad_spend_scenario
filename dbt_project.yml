@@ -22,3 +22,6 @@ models:
       +schema: "{{ none if target.name == 'ci' else 'staging' }}"
     intermediate:
       +schema: "{{ none if target.name == 'ci' else 'intermediate' }}"
+    marts:  
+      +materialized: "{{ 'view' if target.name == 'dev' else 'table' }}"
+
